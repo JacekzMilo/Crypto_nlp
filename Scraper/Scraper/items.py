@@ -8,5 +8,6 @@ import scrapy
 
 class ZrozumiecbitcSpiderItem(scrapy.Item):
     # define the fields for your item here like:
-    article_text = scrapy.Field()
-    art_title = scrapy.Field()
+    text = scrapy.Field()
+    article_name = scrapy.Field()
+    title = scrapy.Field()
