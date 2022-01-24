@@ -1,5 +1,5 @@
 import json
-from time import sleep
+# from time import sleep
 
 
 # class CustomText():
@@ -33,7 +33,6 @@ def customtextfunc(file):
     # sleep(5)
     with open("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json", "r+") as jsonFile:
         jsonFile.truncate(0)
-        # json.dump(jsonFile, ensure_ascii=False)
 
     f1data = f2data = ""
 
