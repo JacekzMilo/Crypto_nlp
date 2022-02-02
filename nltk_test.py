@@ -8,6 +8,8 @@ from nltk.tokenize import RegexpTokenizer
 from google.cloud import bigquery
 from dotenv import load_dotenv
 import os
+import googletrans
+from googletrans import Translator
 # response = urllib.request.urlopen('https://en.wikipedia.org/wiki/SpaceX')
 # html = response.read()
 # soup = BeautifulSoup(html,'html5lib')
@@ -22,13 +24,23 @@ text = df.loc[1:, ["text"]]
 text_str = text.to_string()
 text_str= text_str.lower()
 
+
+
 def unique_list(l):
     ulist = []
     [ulist.append(x) for x in l if x not in ulist]
     return ulist
 
 text_str=' '.join(unique_list(text_str.split()))
-print(text_str)
+
+# print(text_str)
+
+# tu jest tłumaczenie na angielski
+translator = Translator()
+text_str_translated = translator.translate(text_str, src='auto', dest='en')
+text_str= text_str_translated.text
+#########
+
 tokenizer = RegexpTokenizer(r"\w+")
 text_str= tokenizer.tokenize(text_str)
 
@@ -45,7 +57,9 @@ def listToString(text_str):
 
 text_str = listToString(text_str)
 
-# print(text_str)
+print(text_str)
+
+
 
 text_strip = text_str.strip()
 
@@ -71,7 +85,7 @@ for key, val in freq.items():
 dic = dict(zip(keys, values))
 print(dic)
 
-freq.plot(20, cumulative=False)
+# freq.plot(20, cumulative=False)
 
 
 # with open("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/nltk_refactored_text.json", "w") as jsonFile:
