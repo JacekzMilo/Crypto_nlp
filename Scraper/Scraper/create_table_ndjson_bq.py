@@ -49,7 +49,9 @@ def dataload():
             table_ref,
             location="europe-central2",  # Must match the destination dataset location.
             job_config=job_config,
-        )  # API request
+        )
+
+    # API request
 
     job.result()  # Waits for table load to complete.
 

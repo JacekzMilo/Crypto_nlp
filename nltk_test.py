@@ -1,8 +1,8 @@
-from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 import urllib.request
 import nltk
 import json
+import csv
 import pandas as pd
 from nltk.tokenize import RegexpTokenizer
 from google.cloud import bigquery
@@ -10,9 +10,7 @@ from dotenv import load_dotenv
 import os
 import googletrans
 from googletrans import Translator
-# response = urllib.request.urlopen('https://en.wikipedia.org/wiki/SpaceX')
 # html = response.read()
-# soup = BeautifulSoup(html,'html5lib')
 
 pd.options.display.max_colwidth = 5000000
 file = (
@@ -72,9 +70,7 @@ for token in tokens:
         clean_tokens.remove(token)
 freq = nltk.FreqDist(clean_tokens)
 
-
-
-dic = {}
+# dic = {}
 keys = []
 values = []
 for key, val in freq.items():
@@ -82,62 +78,56 @@ for key, val in freq.items():
     values.append('{}'.format(val))
 
 # print(keys)
-dic = dict(zip(keys, values))
-print(dic)
+# dic = dict(zip(keys, values))
+df = pd.DataFrame(list(zip(keys, values)),
+               columns =['text', 'word_count'])
+print(df)
 
-# freq.plot(20, cumulative=False)
+
+df.to_csv(r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/nltk_refactored_text.csv', index = False, header=True)
+
+load_dotenv()
+os.environ[
+    "GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/NLP_algorithm_auth_key/cryptonlp-333511-5df889e063ad.json"
+
+client = bigquery.Client()
+project = client.project
+dataset_ref = bigquery.DatasetReference(project, 'Crypixie')
+
+table_id = "cryptonlp-333511:Crypixie.article_transformed"
+
+table_ref = dataset_ref.table("article_transformed")
+table = bigquery.Table(table_ref)
 
 
-# with open("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/nltk_refactored_text.json", "w") as jsonFile:
-#     json.dump(dic, jsonFile)
+filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/nltk_refactored_text.csv'
+dataset_id = 'Crypixie'
+table_id = 'article_word_count'
+dataset_ref = client.dataset(dataset_id)
+table_ref = dataset_ref.table(table_id)
+job_config = bigquery.LoadJobConfig(
+    # schema=[
+    #     # bigquery.SchemaField("id", "STRING", mode="NULLABLE"),
+    #     bigquery.SchemaField("count", "STRING", mode="NULLABLE"),
+    #     bigquery.SchemaField("text", "STRING", mode="NULLABLE"),
+    # ],
+    # source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+    source_format=bigquery.SourceFormat.CSV,
+    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    autodetect=True
+)
 
-# load_dotenv()
-# os.environ[
-#     "GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/NLP_algorithm_auth_key/cryptonlp-333511-5df889e063ad.json"
-#
-# client = bigquery.Client()
-# project = client.project
-# dataset_ref = bigquery.DatasetReference(project, 'Crypixie')
-#
-# table_id = "cryptonlp-333511:Crypixie.article_transformed"
-#
-# # schema = [
-# #     # bigquery.SchemaField("id", "STRING", mode="NULLABLE"),
-# #     bigquery.SchemaField("article_name", "STRING", mode="NULLABLE"),
-# #     bigquery.SchemaField("text", "STRING", mode="NULLABLE"),
-# # ]
-#
-#
-# table_ref = dataset_ref.table("article_transformed")
-# table = bigquery.Table(table_ref)
-#
-#
-# filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/nltk_refactored_text.json'
-# dataset_id = 'Crypixie'
-# table_id = 'article_transformed'
-# dataset_ref = client.dataset(dataset_id)
-# table_ref = dataset_ref.table(table_id)
-# # job_config = bigquery.QueryJobConfig(use_legacy_sql=False)
-# job_config = bigquery.LoadJobConfig(
-#     # schema=[
-#     #     # bigquery.SchemaField("id", "STRING", mode="NULLABLE"),
-#     #     bigquery.SchemaField("article_name", "STRING", mode="NULLABLE"),
-#     #     bigquery.SchemaField("text", "STRING", mode="NULLABLE"),
-#     # ],
-#     source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-#     write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-#     autodetect=True
-# )
-#
-#
-# with open(filename, "rb") as source_file:
-#     job = client.load_table_from_file(
-#         source_file,
-#         table_ref,
-#         location="europe-central2",  # Must match the destination dataset location.
-#         job_config=job_config,
-#     )  # API request
-#
-# job.result()  # Waits for table load to complete.
-#
-# print("Loaded {} rows.".format(job.output_rows))
+
+with open(filename, "rb") as source_file:
+    job = client.load_table_from_file(
+        source_file,
+        table_ref,
+        location="europe-central2",  # Must match the destination dataset location.
+        job_config=job_config,
+    )
+
+# API request
+
+job.result()  # Waits for table load to complete.
+
+print("Loaded {} rows.".format(job.output_rows))
