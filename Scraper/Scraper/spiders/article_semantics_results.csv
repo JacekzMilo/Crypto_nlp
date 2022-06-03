@@ -1,0 +1,4 @@
+Coin,Sentence,Sentence sentiment analysis,ommit
+bitcoin,"[['bitcoin is great.'], ['here we are exposed to the three most fundamentally strong trends in the crypto industry bitcoin ethereum and defi.'], ['bitcoin is awesome.']]","[{'neg': 0.0, 'neu': 0.328, 'pos': 0.672, 'compound': 0.6249}, {'neg': 0.059, 'neu': 0.777, 'pos': 0.164, 'compound': 0.507}, {'neg': 0.0, 'neu': 0.328, 'pos': 0.672, 'compound': 0.6249}]",0
+polkadot,['i myself would like to see indexes with names like oracles ethkillers or polkadot.'],"[{'neg': 0.0, 'neu': 0.688, 'pos': 0.312, 'compound': 0.6124}]",1
+chainlink,['and its value is based on the price information collected from the outside using the chainlink oracle.'],"[{'neg': 0.0, 'neu': 0.87, 'pos': 0.13, 'compound': 0.34}]",2

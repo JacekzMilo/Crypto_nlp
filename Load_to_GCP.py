@@ -17,15 +17,10 @@ def load(filename, table_name):
     # table_ref = dataset_ref.table("article_transformed")
     # table = bigquery.Table(table_ref)
 
-
-
-    # filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/nltk_refactored_text.csv'
     dataset_id = 'Crypixie'
     table_id = f'{table_name}'
     dataset_ref = client.dataset(dataset_id)
     table_ref = dataset_ref.table(table_id)
-
-
 
     job_config = bigquery.LoadJobConfig(
         # schema=[
@@ -38,6 +33,7 @@ def load(filename, table_name):
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         autodetect=True
     )
+
 
 
     with open(filename, "rb") as source_file:

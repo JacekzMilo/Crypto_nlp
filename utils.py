@@ -37,7 +37,8 @@ def process_text(text):
 
     return text_clean
 
-
+# mapuje kazde unikalne slowo z unikalnym integerem (lub indexem). To jest potrzebne do stworzenia one hot vector
+# Output dictionary that maps words to numeric indices/indexes.
 def get_dict(text_clean):
     """
     Input:
@@ -67,33 +68,35 @@ def get_dict(text_clean):
 def get_idx(words, word2Ind):
     idx = []
     for word in words:
-        idx = idx + [word2Ind[word]]
-    return idx
+        idx = idx + [word2Ind[word]] #to jest integer
+    return idx #zwraca integera dla poszczegolnych slow
 
 def pack_idx_with_frequency(context_words, word2Ind):
     freq_dict = defaultdict(int)
     for word in context_words:
-        freq_dict[word] += 1
-    idxs = get_idx(context_words, word2Ind)
+        freq_dict[word] += 1 #tu tworzy wektor int dla cotext words w zaleznosci od tego ile razy wystepuje
+    idxs = get_idx(context_words, word2Ind) #zwraca int/indexy dla context words
     packed = []
     for i in range(len(idxs)):
-        idx = idxs[i]
+        idx = idxs[i] #indexy poszczegolnych cotext words
         freq = freq_dict[context_words[i]]
-        packed.append((idx, freq))
+        packed.append((idx, freq)) #zwraca liste idx i odpowiadajacy mu czestotliwosc wystepowania cotext word
     return packed
 
+# data-> text_clean, tu jest zaimplementowana window function
+# C -> ile slow ma byc wzietych na prawo i lewo od centralnego slowa
 def get_vectors(data, word2Ind, V, C):
     i = C
     while True:
         y = np.zeros(V)
         x = np.zeros(V)
-        center_word = data[i]
-        y[word2Ind[center_word]] = 1
-        context_words = data[(i - C) : i] + data[(i + 1) : (i + C + 1)]
+        center_word = data[i] #element window function, tu wybiera slowo srodkowe
+        y[word2Ind[center_word]] = 1 #one hot vector
+        context_words = data[(i - C) : i] + data[(i + 1) : (i + C + 1)] #element window funct, wybiera slowa sasiadujace
         num_ctx_words = len(context_words)
         for idx, freq in pack_idx_with_frequency(context_words, word2Ind):
-            x[idx] = freq / num_ctx_words
-        yield x, y
+            x[idx] = freq / num_ctx_words #tu oblicza srednia wektora
+        yield x, y #x to wektor context words, y one hot vector
         i += 1
         if i >= len(data):
             print("i is being set to 0")

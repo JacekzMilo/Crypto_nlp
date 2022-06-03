@@ -12,20 +12,20 @@ import codecs
 
 
 # class JsonWithEncodingPipeline(object):
-
-    # def __init__(self):
-    #     self.file = codecs.open('Scraped_data.json', 'w', encoding='utf-8')
-    #     self.file.write("\n")
-
-
-    # def process_item(self, item, spider):
-    #     line = json.dumps(dict(item), ensure_ascii=False) + "\n"
-    #     # line = json.dumps(ItemAdapter(item).asdict(), ensure_ascii=False) + "\n"
-    #     self.file.write(line)
-    #     return item
-
-    # def spider_closed(self, spider):
-    #     self.file.close()
+#
+#     def __init__(self):
+#         self.file = codecs.open('Scraped_data.json', 'w', encoding='utf-8')
+#         self.file.write("\n")
+#
+#
+#     def process_item(self, item, spider):
+#         line = json.dumps(dict(item), ensure_ascii=False) + "\n"
+#         # line = json.dumps(ItemAdapter(item).asdict(), ensure_ascii=False) + "\n"
+#         self.file.write(line)
+#         return item
+#
+#     def spider_closed(self, spider):
+#         self.file.close()
 
 
 # class ScraperPipeline:

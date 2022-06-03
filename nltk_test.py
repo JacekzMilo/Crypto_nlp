@@ -4,13 +4,27 @@ import json
 import pandas as pd
 import numpy as np
 from Crypto_nlp.utils import process_text, get_dict, get_batches, compute_pca
+import gensim
+from gensim.models import Word2Vec, KeyedVectors
+# For visualization of word2vec model
+from sklearn.manifold import TSNE
+import os
+import logging
+# logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-pd.options.display.max_colwidth = 5000000
+################################
+#UNSUPERVISED MODEL
+
+pd.options.display.max_colwidth = 500000000000
 file = (
-    "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_eng.json")
+    "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_eng_ja_edytowalem_recznie.json")
 records = map(json.loads, open(file, encoding="utf8"))
+# df = pd.read_csv('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_eng.csv')
 df = pd.DataFrame.from_records(records)
-text = df.loc[1:, ["text"]]
+# text = df.loc[1:, ["text"]]
+text=df['text']
+print(text)
+
 text = text.to_string()
 # text = 'Twoja stara jest bardzo stara, bardzo, bardzo'
 # print(text)
@@ -25,7 +39,7 @@ print(text_clean)
 fdist = nltk.FreqDist(word for word in text_clean)
 # print("Size of vocabulary: ",len(fdist))
 fdist.pprint()
-# print("Most frequent tokens: ",fdist.most_common(20) ) # print the 20 most frequent words and their freq.
+print("Most frequent tokens: ",fdist.most_common(20) ) # print the 20 most frequent words and their freq.
 
 
 word2Ind, Ind2word = get_dict(text_clean)
@@ -81,6 +95,7 @@ def softmax(z):
     '''
     ### START CODE HERE (Replace instances of 'None' with your own code) ###
     # Calculate yhat (softmax)
+    # yhat can be interpreted as the probability of being a center word
     yhat = np.exp(z) / np.sum(np.exp(z), axis=0)
     ### END CODE HERE ###
     return yhat
@@ -92,7 +107,9 @@ tmp = np.array([[1, 2, 3],
 tmp_sm = softmax(tmp)
 # print(tmp_sm)
 
+# arr=softmax([9,8,11,10,8.5])
 
+# Forward propagation to tak naprawde trenowanie modelu. X to
 def forward_prop(x, W1, W2, b1, b2):
     '''
     Inputs:
@@ -104,7 +121,7 @@ def forward_prop(x, W1, W2, b1, b2):
     ### START CODE HERE (Replace instances of 'None' with your own code) ###
     # Calculate h
     h = np.dot(W1, x) + b1
-    # Apply the relu on h (store result in h)
+    # Apply the RELU on h (store result in h)
     h = np.maximum(0, h)
     # Calculate z
     z = np.dot(W2, h) + b2
@@ -228,14 +245,14 @@ tmp_m = (2 * tmp_C)
 tmp_grad_W1, tmp_grad_W2, tmp_grad_b1, tmp_grad_b2 = back_prop(tmp_x, tmp_yhat, tmp_y, tmp_h, tmp_W1, tmp_W2, tmp_b1,
                                                                tmp_b2, tmp_batch_size)
 #
-#
-# print()
-# print("call back_prop")
-# print(f"tmp_grad_W1.shape {tmp_grad_W1.shape}")
-# print(f"tmp_grad_W2.shape {tmp_grad_W2.shape}")
-# print(f"tmp_grad_b1.shape {tmp_grad_b1.shape}")
-# print(f"tmp_grad_b2.shape {tmp_grad_b2.shape}")
-#
+
+print()
+print("call back_prop")
+print(f"tmp_grad_W1.shape {tmp_grad_W1.shape}")
+print(f"tmp_grad_W2.shape {tmp_grad_W2.shape}")
+print(f"tmp_grad_b1.shape {tmp_grad_b1.shape}")
+print(f"tmp_grad_b2.shape {tmp_grad_b2.shape}")
+
 def gradient_descent(data, word2Ind, N, V, num_iters, alpha=0.03,
                      random_seed=282, initialize_model=initialize_model,
                      get_batches=get_batches, forward_prop=forward_prop,
@@ -290,19 +307,19 @@ def gradient_descent(data, word2Ind, N, V, num_iters, alpha=0.03,
         if iters % 100 == 0:
             alpha *= 0.66
     return W1, W2, b1, b2
-#
-#
+
+
 # test your function
-# UNIT TEST COMMENT: Each time this cell is run the cost for each iteration,changes slightly (the change is less dramatic after some iterations)
-# to have this into account let's accept an answer as correct if the cost of, iter 15 = 41.6 (without caring about decimal points beyond the first decimal)
+# # UNIT TEST COMMENT: Each time this cell is run the cost for each iteration,changes slightly (the change is less dramatic after some iterations)
+# # to have this into account let's accept an answer as correct if the cost of, iter 15 = 41.6 (without caring about decimal points beyond the first decimal)
 # 41.66, 41.69778, 41.63, etc should all be valid answers.
 C = 2
-N = 50
+N = 300
 word2Ind, Ind2word = get_dict(text_clean)
 V = len(word2Ind)
-num_iters = 160
+num_iters = 140
 W1, W2, b1, b2 = gradient_descent(text_clean, word2Ind, N, V, num_iters)
-# print("Call gradient_descent")
+print("Call gradient_descent")
 
 # visualizing the word vectors here
 
@@ -310,11 +327,13 @@ W1, W2, b1, b2 = gradient_descent(text_clean, word2Ind, N, V, num_iters)
 # 'weight','asset']
 words = ['litecoin', 'polkadot', 'bitcoin cash', 'stellar', 'dogecoin', 'binance coin', 'tether', 'monero', 'solana',
          'avalanche', 'usd coin', 'chainlink', 'Algorand', 'polygon', 'vechain', 'tron', 'zcash', 'eos', 'tezos', 'neo',
-         'stacks', 'nem', 'decred', 'storj', '0x', 'digibyte', 'index', 'token', 'crypto','market','project', 'bitcoin']
+         'stacks', 'nem', 'decred', 'storj', '0x', 'digibyte', 'index', 'token', 'crypto', 'market', 'project',
+         'bitcoin']
+# extracting embeddings
 embs = (W1.T + W2) / 2.0
 # given a list of words and the embeddings, it returns a matrix with all the, embeddings
 
-# idx = [word2Ind[word] for word in words]
+idx = [word2Ind[word] for word in words]
 idx = []
 for word in words:
     if word in word2Ind:
@@ -324,13 +343,181 @@ for word in words:
         print(f'there is no "{word}"')
 
 X = embs[idx, :]
-# print(X.shape)
-# print(type(X))
-# print(X.shape, idx) # X.shape: Number of words of dimension N each
+print(X.shape)
+print(type(X))
+print(X.shape, idx) # X.shape: Number of words of dimension N each
 
 result= compute_pca(X, 2)
-# print(result)
+print(result)
 plt.scatter(result[:, 0], result[:, 1])
 for i, word in enumerate(words):
     plt.annotate(word, xy=(result[i, 0], result[i, 1]))
-# plt.show()
+plt.show()
+
+# Logika działania algorytmu
+# 1. Preprocessing danych -> remove hashtags, tokenizacja, remove stopwords, remove punctuation, stemming word
+# 2. Compute the frequency distribution of the words in the dataset (vocabulary) -> Po CO?
+# 3. Jak obliczamy X -> get vectors ma window function, tworzy x rozkmin dalej c2_w4_lecture_nb_3
+# 4. Po co liczym word2ind i na odwrot -> Chyba tylko po to zeby dalo sie wyliczyc gradient descent
+
+
+
+####################################
+
+#PRETRAINED WORD2VEC
+
+# pretrained_google_news_model = KeyedVectors.load_word2vec_format(
+#     'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/GoogleNews-vectors-negative300.bin', binary=True)
+
+# class MySentences(object):
+#     def __init__(self, dirname):
+#         self.dirname = dirname
+#
+#     def __iter__(self):
+#         for fname in os.listdir(self.dirname):
+#             for line in open(os.path.join(self.dirname, fname)):
+#                 yield line.split()
+
+
+from gensim import utils
+from gensim.test.utils import datapath
+
+
+# class MyCorpus(object):
+#     """An interator that yields sentences (lists of str)."""
+#
+#     def __iter__(self):
+#         corpus_path = datapath(
+#             'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_eng.txt')
+#         for line in open(corpus_path):
+#             # assume there's one document per line, tokens separated by whitespace
+#             yield utils.simple_preprocess(line)
+
+
+# sentences = MyCorpus()
+sentences = ['litecoin', 'polkadot', 'bitcoin cash', 'stellar', 'dogecoin', 'binance coin', 'tether', 'monero', 'solana',
+      'avalanche', 'usd coin', 'chainlink', 'Algorand', 'polygon', 'vechain', 'tron', 'zcash', 'eos', 'tezos', 'neo',
+      'stacks', 'nem', 'decred', 'storj', '0x', 'digibyte', 'index', 'token', 'crypto', 'market', 'project',
+      'bitcoin']
+# model_cbow = Word2Vec(sentences, min_count=1)
+preprocessed_text = text.apply(gensim.utils.simple_preprocess)
+
+# model_cbow = Word2Vec(preprocessed_text)
+# model_cbow.build_vocab(corpus_iterable=preprocessed_text, update=True)
+# model_cbow = Word2Vec(preprocessed_text, min_count=1, workers=4, vector_size=200,  window =3, epochs=20)
+# print(model_cbow.corpus_count)
+# model_cbow.train(
+#     list(df), total_examples=model_cbow.corpus_count, epochs=model_cbow.epochs)
+# model_cbow.wv.save_word2vec_format("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/custom_word2vec2.bin", binary=True)
+
+# model_cbow = Word2Vec.load('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/custom_word2vec2.gz')
+
+# print(model_cbow.wv.evaluate_word_analogies('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/custom_word2vec'))
+
+# print(model_cbow.wv.most_similar(['polkadot']))
+# c=model_cbow.wv.most_similar(['bitcoin'])
+# model = gensim.models.KeyedVectors.load('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/custom_word2vec2.bin', mmap='r')
+# model = Word2Vec.load('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/custom_word2vec2.bin')
+model = gensim.models.keyedvectors.load_word2vec_format('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/word2vec/custom_word2vec2.bin', binary=True)
+# print(model['computer'])
+# print(model['bitcoin'])
+print(model.n_similarity(['bitcoin'], ['solana']))
+# most_similar=model.similar_by_word(word_labels[1])
+# print([i[0] for i in most_similar])
+
+
+
+# def display_closestwords_tsnescatterplot(model, word):
+#     # arr = np.empty((8, 200), dtype='f')
+#     w = list(filter(lambda x: x in model.key_to_index, sentences)) #filtruje slowa z listy na podstawie vocab
+#     word_labels = w
+#     # get close words
+#     close_words=[]
+#     wrd_vector=[]
+#     for i in range(len(w[0:2])):
+#         # close_words.append(model.similar_by_word(w[i]))
+#         close_words.append(model.most_similar(positive=w))
+#         # close_words = np.append(close_words, np.array([i[0] for i in most_similar]), axis=0)
+#     print('close_words:', close_words)
+#     # add the vector for each of the closest words to the array
+#     z = list(filter(lambda x: x in model.key_to_index, [i[0] for i in close_words[0]]))
+#     print('z:',z)
+#     print('model[w]:',np.array(model[w]))
+#     arr = model[w]
+#     print('arr', arr)
+#     for i in range(len(z)):
+#         wrd_vector.append(model[z[i]])
+#         word_labels.append(z[i])
+#     # print('wrd_vector:', wrd_vector)
+#     # print('word_labels:', word_labels)
+#     # arr = np.append(arr, [wrd_vector], axis=0)
+#         # print('i:', i)
+#     # find tsne coords for 2 dimensions
+#     tsne = TSNE(n_components=2, random_state=0)
+#     np.set_printoptions(suppress=True)
+#     Y = tsne.fit_transform(arr)
+#
+#     x_coords = Y[:, 0]
+#     y_coords = Y[:, 1]
+#     # display scatter plot
+#     plt.scatter(x_coords, y_coords)
+#
+#     for label, x, y in zip(word_labels, x_coords, y_coords):
+#         plt.annotate(label, xy=(x, y), xytext=(0, 0), textcoords='offset points')
+#     plt.xlim(x_coords.min() + 0.00005, x_coords.max() + 0.00005)
+#     plt.ylim(y_coords.min() + 0.00005, y_coords.max() + 0.00005)
+#     plt.show()
+# #
+# display_closestwords_tsnescatterplot(model, sentences)
+
+
+
+###############################
+#TESTOWY KOD
+# close_words = []
+# w = list(filter(lambda x: x in model.key_to_index, sentences))
+# for i in range(len(w)):
+#     close_words.append(model.most_similar(positive=w))
+#     # close_words.append(model.similar_by_word(w[i]))
+# print('closeword:',close_words)
+# print('w', w)
+# z = list(filter(lambda x: x in model.key_to_index, [i[0] for i in close_words[0]]))
+# print('z', z)
+#
+# # for i in range(len(z)):
+# #     wrd_vector = model[z[i]]
+# # print([wrd_score[0] for wrd_score in close_words[0]])
+#
+# # print('close_words:',close_words)
+# # print('wrd_vector:',wrd_vector)
+# # print(w)
+# # print(f"word in vocab:{i}")
+# # print(model.most_similar(positive=w))
+# # word_labels =[]
+# # # words= [i[0] for i in close_words]
+# # # words = close_words
+# arr = np.empty((len(close_words[0]),200), dtype='f')
+# word_labels = [sentences]
+# # print(model['bitcoin'].shape)
+# # print(arr.shape)
+# for i in range(len(w)):
+#     np.append(arr, np.array([model[w[i]]]), axis=0)
+#
+# z = list(filter(lambda x: x in model.key_to_index, [i[0] for i in close_words[0]]))
+# for i in range(len(z)):
+#     wrd_vector = model[z[i]]
+#     arr = np.append(arr, np.array([wrd_vector]), axis=0)
+#     # print("wrd_score:", wrd_score)
+#     # print("wrd_vector:", wrd_vector.shape)
+#
+#     # print("wrd_vector:", wrd_vector)
+#     # print("arr:", arr)
+# word_labels.append(close_words[0])
+# # print("close_words",len(close_words[0]))
+# # print("wrd_vector:", wrd_vector.shape)
+# # print("arr:", arr.shape)
+# # print("word_labels:", word_labels)
+# # for i in range(len(close_words[0])):
+# #     w = list(filter(lambda x: x in model.key_to_index, close_words[0]))
+# # print(w)
+##########################################

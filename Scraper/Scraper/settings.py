@@ -88,16 +88,13 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Desired file format
-# FEED_FORMAT = "jsonlines"
 FEEDS = {
     "Scraped_data.json": {
         "format": "jsonlines",
         "overwrite": True
          }
     }
-
-
 # Name of the file where data extracted is stored
 FEED_EXPORT_ENCODING = 'utf-8'
 # ITEM_PIPELINES = {'Scraper.pipelines.JsonWithEncodingPipeline':100}
-# FEED_URI = "Scraped_data.json"
+FEED_URI = "Scraper/Scraper/spiders/Scraped_data.json"
