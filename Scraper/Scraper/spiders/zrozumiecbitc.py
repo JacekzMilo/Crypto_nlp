@@ -25,6 +25,7 @@ import sys
 
     # else:
 class ZrozumiecbitcSpider(scrapy.Spider):
+
     # Name of the spider as mentioned in the "genspider" command
     name = 'zrozumiecbitc'
     # Domains allowed for scraping, as mentioned in the "genspider" command

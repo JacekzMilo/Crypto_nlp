@@ -4,7 +4,7 @@ from Crypto_nlp.aspect_based_opinion_mining_mlp9_github import nlp_article_seman
 from Crypto_nlp.Load_to_GCP import load
 from scrapy.crawler import CrawlerProcess
 # from Crypto_nlp.Scraper.Scraper import settings
-from scrapy.settings import Settings
+# from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
 from Crypto_nlp.Scraper.Scraper.spiders import zrozumiecbitc
 import os
@@ -14,6 +14,7 @@ from time import sleep
 settings_file_path = 'Scraper.settings' # The path seen from root, ie. from main.py
 os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
 print("os.environ.setdefault", os.environ.setdefault)
+
 
 settings=get_project_settings()
 process = CrawlerProcess(settings)

@@ -89,7 +89,7 @@ ROBOTSTXT_OBEY = True
 
 # Desired file format
 FEEDS = {
-    "Scraped_data.json": {
+    "Scraper/Scraper/spiders/Scraped_data.json": {
         "format": "jsonlines",
         "overwrite": True
          }
@@ -97,4 +97,4 @@ FEEDS = {
 # Name of the file where data extracted is stored
 FEED_EXPORT_ENCODING = 'utf-8'
 # ITEM_PIPELINES = {'Scraper.pipelines.JsonWithEncodingPipeline':100}
-FEED_URI = "Scraper/Scraper/spiders/Scraped_data.json"
+# FEED_URI = "Scraper/Scraper/spiders/Scraped_data.json"
