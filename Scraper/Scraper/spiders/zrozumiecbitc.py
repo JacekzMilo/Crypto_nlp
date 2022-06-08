@@ -28,10 +28,10 @@ class ZrozumiecbitcSpider(scrapy.Spider):
 
 
         item = ZrozumiecbitcSpiderItem()
-        item['article_name_1'] = response.request.meta['zrozumiecbitc_title']
+        item['article_name'] = response.request.meta['zrozumiecbitc_title']
         articles = response.xpath('(//*[@id="content-2403"])/div')
         # for article in articles:
-        item['article_text_1'] = articles.xpath(".//p/text()").getall()
+        item['article_text'] = articles.xpath(".//p/text()").getall()
 
         # item['article_text_1'] = list(item['article_text_1'])
         # item['article_text_1'] = [i.replace("\t", "").replace("\n", "") for i in item['article_name_1']]

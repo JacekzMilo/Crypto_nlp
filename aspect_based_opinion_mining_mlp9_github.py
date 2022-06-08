@@ -14,16 +14,16 @@ def nlp_article_semantic(file):
     pd.set_option('display.width', None)
     pd.set_option('display.max_colwidth', None)
     #
-    txt = (
-        f"{file}")
-    records = map(json.loads, open(txt, encoding="utf8"))
-    df = pd.DataFrame.from_records(records)
-    result=df["text"]
-    # df = pd.read_csv(f"{file}", encoding="utf8")
+    # txt = (
+    #     f"{file}")
+    # records = map(json.loads, open(txt, encoding="utf8"))
+    # df = pd.DataFrame.from_records(records)
+    # result=df["text"]
+    df = pd.read_csv(f"{file}", encoding="utf8")
     # print("df", df)
-    # print("df['article_text_translated']", df["article_text_translated"])
-    # result = df["article_text_translated"]
-########################
+    # print("df['article_text']", df["article_text"])
+    result = df["article_text"]
+# ########################
 # text cleaning
     from string import punctuation
     import re
@@ -43,14 +43,24 @@ def nlp_article_semantic(file):
             clean += ". "
         return clean
     ########################
-    result = [clean_sentence(x) for x in result]
-    print('words', result)
-
-
+    result_after_clean=[]
+    j=0
+    for i in result:
+        if j == 0:
+            # print("i", type(i))
+            result_after_clean = (pd.Series(clean_sentence(i)))
+            # print("result_after_clean1", result_after_clean)
+        else:
+            result_after_clean2 = (pd.Series(clean_sentence(i)))
+            result_after_clean = pd.concat([result_after_clean, result_after_clean2], axis=0)
+        j+=1
+    print('result_after_clean2', result_after_clean)
+    result=result_after_clean
     # Check sentiment polarity of each sentence.
     sentiment_scores = list()
     i = 0
     for sentence in result:
+        # print("sentence", sentence)
         line = TextBlob(sentence)
         sentiment_scores.append(line.sentiment.polarity)
         if(i <= 10):
@@ -58,7 +68,7 @@ def nlp_article_semantic(file):
             i += 1
 
     # print(sns.distplot(sentiment_scores))
-
+#
     # Convert array of comments into a single string
     comments = TextBlob(' '.join(result))
     # Check out noun phrases, will be useful for frequent feature extraction
@@ -67,53 +77,53 @@ def nlp_article_semantic(file):
     featureList=['litecoin', 'polkadot', 'bitcoin', 'stellar', 'dogecoin', 'binance', 'tether', 'monero', 'solana',
              'avalanche', 'chainlink', 'algorand', 'polygon', 'vechain', 'tron', 'zcash', 'eos', 'tezos', 'neo',
              'stacks', 'nem', 'decred', 'storj', '0x', 'digibyte']
-
-    # # compactness pruning:
-    # cleaned = list()
-    # for phrase in featureList:
-    #     count = 0
-    #     for word in phrase.split():
-    #         # Count the number of small words and words without an English definition
-    #         if len(word) <= 2 or (not Word(word).definitions):
-    #             count += 1
-    #     # Only if the 'nonsensical' or short words DO NOT make up more than 40% (arbitrary) of the phrase add
-    #     # it to the cleaned list, effectively pruning the ones not added.
-    #     if count < len(phrase.split()) * 0.4:
-    #         cleaned.append(phrase)
-    #
-    # print("After compactness pruning:\nFeature Size:")
-    # print(len(cleaned))
-    #
-    # for phrase in cleaned:
-    #     match = list()
-    #     temp = list()
-    #     word_match = list()
-    #     for word in phrase.split():
-    #         # Find common words among all phrases
-    #         word_match = [p for p in cleaned if re.search(word, p) and p not in word_match]
-    #         # If the size of matched phrases set is smaller than 30% of the cleaned phrases,
-    #         # then consider the phrase as non-redundant.
-    #         if len(word_match) <= len(cleaned) * 0.3:
-    #             temp.append(word)
-    #             match += word_match
-    #
-    #     phrase = ' '.join(temp)
-    #     #     print("Match for " + phrase + ": " + str(match))
-    #
-    #     if len(match) >= len(cleaned) * 0.1:
-    #         # Redundant feature set, since it contains more than 10% of the number of phrases.
-    #         # Prune all matched features.
-    #         for feature in match:
-    #             if feature in cleaned:
-    #                 cleaned.remove(feature)
-    #
-    #         # Add largest length phrase as feature
-    #         cleaned.append(max(match, key=len))
-    #
-    # print("After redundancy pruning:\nFeature Size:" + str(len(cleaned)))
-    # print("Cleaned features:")
-    # print(cleaned)
-
+#
+#     # # compactness pruning:
+#     # cleaned = list()
+#     # for phrase in featureList:
+#     #     count = 0
+#     #     for word in phrase.split():
+#     #         # Count the number of small words and words without an English definition
+#     #         if len(word) <= 2 or (not Word(word).definitions):
+#     #             count += 1
+#     #     # Only if the 'nonsensical' or short words DO NOT make up more than 40% (arbitrary) of the phrase add
+#     #     # it to the cleaned list, effectively pruning the ones not added.
+#     #     if count < len(phrase.split()) * 0.4:
+#     #         cleaned.append(phrase)
+#     #
+#     # print("After compactness pruning:\nFeature Size:")
+#     # print(len(cleaned))
+#     #
+#     # for phrase in cleaned:
+#     #     match = list()
+#     #     temp = list()
+#     #     word_match = list()
+#     #     for word in phrase.split():
+#     #         # Find common words among all phrases
+#     #         word_match = [p for p in cleaned if re.search(word, p) and p not in word_match]
+#     #         # If the size of matched phrases set is smaller than 30% of the cleaned phrases,
+#     #         # then consider the phrase as non-redundant.
+#     #         if len(word_match) <= len(cleaned) * 0.3:
+#     #             temp.append(word)
+#     #             match += word_match
+#     #
+#     #     phrase = ' '.join(temp)
+#     #     #     print("Match for " + phrase + ": " + str(match))
+#     #
+#     #     if len(match) >= len(cleaned) * 0.1:
+#     #         # Redundant feature set, since it contains more than 10% of the number of phrases.
+#     #         # Prune all matched features.
+#     #         for feature in match:
+#     #             if feature in cleaned:
+#     #                 cleaned.remove(feature)
+#     #
+#     #         # Add largest length phrase as feature
+#     #         cleaned.append(max(match, key=len))
+#     #
+#     # print("After redundancy pruning:\nFeature Size:" + str(len(cleaned)))
+#     # print("Cleaned features:")
+#     # print(cleaned)
+#
     from nltk.corpus import stopwords
 
     feature_count = dict()
@@ -128,20 +138,20 @@ def nlp_article_semantic(file):
 
     # Select frequent feature threshold as (max_count)/100
     # This is an arbitrary decision as of now.
-    counts = list(feature_count.values())
-    features = list(feature_count.keys())
+    # counts = list(feature_count.values())
+    # features = list(feature_count.keys())
     threshold = len(featureList)/100
     #threshold=66
 
     print("Threshold:" + str(threshold))
-
+#
     frequent_features = list()
     # tu okresla ktore coiny sa najczestsze
     for feature, count in feature_count.items():
         if count >= threshold:
             frequent_features.append(feature)
     print(' Features:')
-    frequent_features=frequent_features[0:5]
+    # frequent_features=frequent_features
     print(frequent_features)
 
     # nltk.download('vader_lexicon')
@@ -153,7 +163,7 @@ def nlp_article_semantic(file):
         score = nltk_sentiment.polarity_scores(sentence)
         return score
 
-    ############# tu robi analize dla poszczegolnych slow kluczowych, nie uzwam.
+    ############# tu robi analize dla poszczegolnych slow kluczowych
     # b=dataset.values.T.tolist()
     # print(b)
     nltk_results = [nltk_sentiment(row) for row in frequent_features]
@@ -171,27 +181,33 @@ def nlp_article_semantic(file):
     newdf=pd.DataFrame({'features':nltk_df[0],'pos':nltk_df['pos'],'neg':nltk_df['neg']})
     newdf.pos=newdf.pos+0.2
     newdf.neg=newdf.neg-0.2
-    # print('newdf', newdf)
+    print('newdf', newdf)
 
 
     absa_list = dict()
     sentences=[]
+    j=0
+
     # For each frequent feature
     for f in frequent_features:
-        # For each comment
+        q = '|'.join(f.split())
+        # For each key word
         absa_list[f] = list()
+        # for i in result:
         for comment in result:
             blob = TextBlob(comment)
             # For each sentence of the comment
             for sentence in blob.sentences:
                 # Search for frequent feature 'f'
-                q = '|'.join(f.split())
+                # print("str(q)", str(q))
                 if re.search(r'\w*(' + str(q) + ')\w*', str(sentence)):
                     absa_list[f].append(sentence)
                     sentences.append(sentence)
 
 
     # print("sentences", sentences)
+    # print("absa_list", absa_list)
+
     sentences=" ".join(str(x) for x in sentences)
     from nltk.tokenize import sent_tokenize
     sentences=sent_tokenize(sentences)
@@ -209,7 +225,7 @@ def nlp_article_semantic(file):
     nltk_df2['text'] = text_df
     nltk_df2=nltk_df2.join(results_df)
     print('nltk_df.head(5)2', nltk_df2.head(5))
-
+#
     nltk_df2.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv',
         index=False, header=True)

@@ -31,12 +31,12 @@ class BitcoinSpider(scrapy.Spider):
 
     def parse_bitcoin_spider(self, response):
         item = BitcoinSpiderItem()
-        item['article_name_2'] = response.request.meta['bitcoin_spider_title']
+        item['article_name'] = response.request.meta['bitcoin_spider_title']
         articles = response.xpath('(//div[@id="piano-inline-content-wrapper"])')
         # for article in articles:
-        item['article_text_2'] = articles.xpath(".//p//text()").getall()
-        item['article_text_2']=[i.replace("\t", "").replace("\n", "") for i in item['article_text_2']]
-        item['article_text_2']=[i.replace("\u00A0", " ") for i in item['article_text_2']]
+        item['article_text'] = articles.xpath(".//p//text()").getall()
+        item['article_text']=[i.replace("\t", "").replace("\n", "") for i in item['article_text']]
+        item['article_text']=[i.replace("\u00A0", " ") for i in item['article_text']]
 
         # item['article_text_2'] = list(item['article_text_2'])
         # item['article_text'] = [i.replace("\", " ") for i in item['article_text']]

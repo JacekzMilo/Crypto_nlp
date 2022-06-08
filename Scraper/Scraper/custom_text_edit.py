@@ -13,163 +13,153 @@ pd.set_option('display.max_colwidth', None)
 
 
 ##########################
-#Po scrapowaniu kazde zdanie jest z apostrofami, jest w postaci słownika gdzie klucze to: article_name i article_text, wartość dla article_text jest w postaci listy
+#Po scrapowaniu kazde zdanie jest z apostrofami ponieważ sa w oddzielnych pozycjach <p> , jest w postaci słownika gdzie
+#klucze to: article_name i article_text, wartość dla article_text jest w postaci listy
 #Outputem funkcji customtextfunc jest plik .csv ktory jest w postaci słownika tylko z zewnętrznymi apostrofami
 #Outputem article_manipulation jest przetłumaczony tekst
 
+
 def customtextfunc(file):
     # file = open(f'{file}', "r")
-    with open(f'{file}') as f:
+    with open(f'{file}', 'r', encoding='utf8') as f:
         data = f.read()
     df = data.replace('][', ',')
     data = pd.read_json(df)
-    print(data['article_text_1'].dropna())
-    # data = json.load(file)
-    # data=pd.read_csv(f'{file}', encoding="utf8")
-    # print("data", data)
+
+    dict1, dict2 = {}, {}
+
     j=0
-    for key in data:
-        # print('key', key)
-        for i in range(1, 2):
-            if key == f"article_text_{i}":
-                # data[f"article_text_{i}"].drop()
-                data_df=pd.DataFrame(data)
-                data_df[f"article_text_{i}"] = data_df[f"article_text_{i}"].dropna()
-                print('data_df[f"article_text_{i}"]', data_df[f"article_text_{i}"])
 
-                # data[f"article_text_{i}"]=data[f"article_text_{i}"].to_string()
-                data_string = data[f"article_text_{i}"].to_string()
-                # print("data_string", type(data_string))
-                replaced_string = data_string.strip('"')
-                # replaced_string = " ".join(data_string)
-                data[f"article_text_{i}"] = replaced_string
+    for i in data['article_text']:
 
-                print(f'data["article_text_{i}"]',data[f"article_text_{i}"])
-                # print(f'data["article_text_{i}"]', type(data[f"article_text_{i}"]))
+        # Function to convert list to string
+        def listToString(s):
+            # initialize an empty string
+            str1 = " "
+            return (str1.join(s))
 
-                data = dict(data)
+        data_string = listToString(i)
 
-                dict1, dict2 = {}, {}
+        replaced_string = " ".join(data_string.split())
 
-                dict1 = {"article_name": data[f"article_name_{i}"]}
-                dict2 = {"article_text": data[f"article_text_{i}"]}
-                print("dic1", dict1)
-                print("dic2", dict2)
+        data_df =pd.DataFrame(data=[replaced_string] ,columns=["article_text"])
 
-                with open("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.json", "w") as jsonFile:
-                    json.dump(dict1, jsonFile, ensure_ascii=False)
 
-                with open("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes2.json", "w") as jsonFile:
-                    json.dump(dict2, jsonFile, ensure_ascii=False)
+        dict1 = {"article_name": data["article_name"][0]}
 
-                # sleep(5)
-                with open("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json", "r+") as jsonFile:
-                    jsonFile.truncate(0)
+        df1 = pd.DataFrame(dict1, index=[0])
+        # print("df1_przed_petlami", df1)
+        if j == 0:
+            article_text_df = data_df
+            # print("article_text_j=0", article_text_df)
+            df1.to_csv(
+                r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
+                index=False, header=True)
 
-                f1data = f2data = ""
+            data_df.to_csv(
+                r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes2.csv',
+                index=False, header=True)
+        else:
+            article_name_df=pd.DataFrame(data=[data["article_name"][j]], columns=["article_name"])
+            # print("article_df", article_df)
+            df1 = df1.append(article_name_df)
+            # print("df1", df1)
+            df1.to_csv(
+                r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
+                index=False, header=True)
+            # print('druga runda')
+            # print("data_df", data_df)
 
-                with open('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.json') as f1:
-                    f1data = f1.read()
+            article_text_df = article_text_df.append(data_df)
+            # print("article_text_df", article_text_df)
+            article_text_df.to_csv(
+                r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes2.csv',
+                index=False, header=True)
+        j += 1
 
-                with open('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes2.json') as f2:
-                    f2data = f2.read()
+    article_name_df = pd.read_csv('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv', encoding="utf8")
 
-                f1data += "\n"
-                f1data += f2data
+    # print('article_name_df', article_name_df)
 
-                if j==0:
-                    with open('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json', 'a') as f3:
-                        f3.write(f1data)
-                else:
-                    with open('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json', 'a') as f3:
-                        data = json.load(f3)
-                        data.update(f1data)
-                j += 1
+    article_text_df = pd.read_csv('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes2.csv', encoding="utf8")
 
-    txt = (
-        "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json")
-    records = map(json.loads, open(txt, encoding="utf8"))
-    df = pd.DataFrame.from_records(records)
-    df["ommit"]=range(len(df))
-    df.to_csv(
+
+    df_total = pd.concat([article_name_df, article_text_df], axis=1)
+    # print('df_total', df_total)
+
+
+    #     #to tworzy pusty Scraped_data.csv
+    filename = "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv"
+    # opening the file with w+ mode truncates the file
+    f = open(filename, "w+")
+    f.close()
+
+    #to jest potrzebne zeby BQ rozkminił nagłowki tabel, do pominięcia przy wykresach
+    df_total["ommit"]=range(len(df_total))
+    # print("df_total", df_total)
+    df_total.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv',
         index=False, header=True)
 
-    sleep(1)
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
-    # load(filename, 'article')
+    load(filename, 'article')
 
-def article_manipulation(file):
-    #     df = pd.read_csv(f"{file}")
-    # # print("file", file)
-    # # records = map(json.loads, open(file, encoding="utf8"))
-    # # df = pd.DataFrame(file)
+def article_translation(file):
+
     df=pd.read_csv("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv", encoding="utf8")
     # print("df", df)
     # for key in file:
     #     for i in range(1, 2):
     #         if key==f"article_text_{i}":
-    text = df["article_text"].loc[1:]
-    text_str = text.to_string(index=False)
-    # print('text_str1', text_str)
-
-    text_headline=df['article_name'].loc[:0,]
-    text_headline=text_headline.to_string(index=False)
-    # print('text_headline1',text_headline)
-
-
-    def unique_list(l):
-        ulist = []
-        [ulist.append(x) for x in l if x not in ulist]
-        return ulist
-
-    # text_str=' '.join(unique_list(text_str.split()))
-    # # print('text_str2', text_str)
-    #
-    # text_headline=' '.join(unique_list(text_headline.split()))
-    # # print('text_headline2',text_headline)
-
-    #######################Tokenizacja tekstu i usuwanie integerów
-    # tokenizer = RegexpTokenizer(r"\w+")
-    # text_str= tokenizer.tokenize(text_str)
-    # text_str = [x for x in text_str if not (x.isdigit()
-    #                                          or x[0] == '-' and x[1:].isdigit())]
-    # text_headline= tokenizer.tokenize(text_headline)
-    # text_headline = [x for x in text_headline if not (x.isdigit()
-    #                                          or x[0] == '-' and x[1:].isdigit())]
-    #######################
-
-    ####################### Zamiana tekstu na string
-    # def listToString(text_str):
-    #     # initialize an empty string
-    #     str1 = " "
-    #     return (str1.join(text_str))
-    # text_str = listToString(text_str)
-    # text_headline = listToString(text_headline)
-    # print('text_str', text_str)
-    # print('text_headline', text_headline)
-
-    #######################
 
     ####################### tu jest tłumaczenie
-    translator = Translator()
+    def translate(string):
+        translator = Translator()
+        text_str_translated = translator.translate(string, src='auto', dest='en')
+        return text_str_translated.text
 
-    text_str_translated = translator.translate(text_str, src='auto', dest='en')
-    text_str= text_str_translated.text
-    # print('text_str3', text_str)
 
-    text_headline_translated=translator.translate(text_headline, src='auto', dest='en')
-    text_headline=text_headline_translated.text
-    # print('text_headline3', text_headline)
+    j=0
+    for i in df["article_text"]:
+        text = df["article_text"].loc[j]
+        text_translated = translate(text)
+        # print('text_translated', text_translated)
+        text_translated_df = pd.DataFrame(data=[text_translated], columns=["article_text"])
 
-    text_str_dic={"article_name":[text_headline],"article_text_translated":[text_str]}
-    article_translated=pd.DataFrame.from_dict(text_str_dic)
+        if j == 0:
+            text_translated_df1 = pd.DataFrame(data=[text_translated], columns=["article_text"])
+            # print('text_translated_df1', text_translated_df1)
 
-    article_translated["ommit"]=range(len(article_translated))
+        else:
+            text_translated_df2 = pd.concat([text_translated_df1, text_translated_df], axis=0)
+            # print("drugra runda")
+            print('text_translated_df2', text_translated_df2)
+        j+=1
 
-    # print('article_translated', article_translated)
-    article_translated.to_csv(r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv', index = False, header=True)
-    sleep(1)
-    # filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv'
-    # load(filename, 'article_translated')
+    j = 0
+    for i in df["article_name"]:
+        text = df["article_name"].loc[j]
+        text_translated = translate(text)
+        # print('text_translated', text_translated)
+        text_translated_df = pd.DataFrame(data=[text_translated], columns=["article_name"])
+
+        if j == 0:
+            text_translated_df1 = pd.DataFrame(data=[text_translated], columns=["article_name"])
+            # print('text_translated_df1', text_translated_df1)
+
+        else:
+            text_translated_df3 = pd.concat([text_translated_df1, text_translated_df], axis=0)
+            # print("drugra runda")
+            # print('text_translated_df3', text_translated_df3)
+        j += 1
+
+    text_translated_all = pd.concat([text_translated_df3, text_translated_df2], axis=1)
+    print('text_translated_all', text_translated_all)
+
+    text_translated_all["ommit"]=range(len(text_translated_all))
+
+    text_translated_all.to_csv(r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv', index = False, header=True)
+
+    filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv'
+    load(filename, 'article_translated')
     print("Oryginalny tekst przetłumaczony i zapisany jako article_translated.csv")
