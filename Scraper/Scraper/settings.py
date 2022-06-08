@@ -9,12 +9,12 @@
 
 BOT_NAME = 'Scraper'
 
-SPIDER_MODULES = ['Scraper.spiders']
+SPIDER_MODULES = 'Scraper.spiders'
 NEWSPIDER_MODULE = 'Scraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'Scraper (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -56,10 +56,9 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
-
+# EXTENSIONS = {
+#    'Crypto_nlp.Scraper.Scraper.extensions.MoveFileOnCloseExtension': 500,
+# }
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
@@ -94,6 +93,8 @@ FEEDS = {
         "overwrite": True
          }
     }
+FEED_EXPORTERS= {'jsonlines': 'scrapy.exporters.JsonItemExporter'}
+
 # Name of the file where data extracted is stored
 FEED_EXPORT_ENCODING = 'utf-8'
 # ITEM_PIPELINES = {'Scraper.pipelines.JsonWithEncodingPipeline':100}

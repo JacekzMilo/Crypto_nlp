@@ -14,15 +14,15 @@ def nlp_article_semantic(file):
     pd.set_option('display.width', None)
     pd.set_option('display.max_colwidth', None)
     #
-    # txt = (
-    #     f"{file}")
-    # records = map(json.loads, open(txt, encoding="utf8"))
-    # df = pd.DataFrame.from_records(records)
-    # result=df["text"]
-    df = pd.read_csv(f"{file}", encoding="utf8")
+    txt = (
+        f"{file}")
+    records = map(json.loads, open(txt, encoding="utf8"))
+    df = pd.DataFrame.from_records(records)
+    result=df["text"]
+    # df = pd.read_csv(f"{file}", encoding="utf8")
     # print("df", df)
     # print("df['article_text_translated']", df["article_text_translated"])
-    result = df["article_text_translated"]
+    # result = df["article_text_translated"]
 ########################
 # text cleaning
     from string import punctuation
