@@ -54,7 +54,7 @@ def nlp_article_semantic(file):
             result_after_clean2 = (pd.Series(clean_sentence(i)))
             result_after_clean = pd.concat([result_after_clean, result_after_clean2], axis=0)
         j+=1
-    print('result_after_clean2', result_after_clean)
+    # print('result_after_clean2', result_after_clean)
     result=result_after_clean
     # Check sentiment polarity of each sentence.
     sentiment_scores = list()
@@ -64,7 +64,7 @@ def nlp_article_semantic(file):
         line = TextBlob(sentence)
         sentiment_scores.append(line.sentiment.polarity)
         if(i <= 10):
-            print(sentence + ": POLARITY=" + str(line.sentiment.polarity))
+            # print(sentence + ": POLARITY=" + str(line.sentiment.polarity))
             i += 1
 
     # print(sns.distplot(sentiment_scores))
@@ -72,7 +72,7 @@ def nlp_article_semantic(file):
     # Convert array of comments into a single string
     comments = TextBlob(' '.join(result))
     # Check out noun phrases, will be useful for frequent feature extraction
-    print('comments.noun_phrases', comments.noun_phrases)
+    # print('comments.noun_phrases', comments.noun_phrases)
 
     featureList=['litecoin', 'polkadot', 'bitcoin', 'stellar', 'dogecoin', 'binance', 'tether', 'monero', 'solana',
              'avalanche', 'chainlink', 'algorand', 'polygon', 'vechain', 'tron', 'zcash', 'eos', 'tezos', 'neo',
@@ -181,12 +181,11 @@ def nlp_article_semantic(file):
     newdf=pd.DataFrame({'features':nltk_df[0],'pos':nltk_df['pos'],'neg':nltk_df['neg']})
     newdf.pos=newdf.pos+0.2
     newdf.neg=newdf.neg-0.2
-    print('newdf', newdf)
+    # print('newdf', newdf)
 
 
     absa_list = dict()
     sentences=[]
-    j=0
 
     # For each frequent feature
     for f in frequent_features:
@@ -225,10 +224,12 @@ def nlp_article_semantic(file):
     nltk_df2['text'] = text_df
     nltk_df2=nltk_df2.join(results_df)
     print('nltk_df.head(5)2', nltk_df2.head(5))
-#
+
     nltk_df2.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv',
         index=False, header=True)
+    print("Tekst przeanalizowany i zapisany jako article_semantics_results_for_plot.csv")
+
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv'
     load(filename, 'results_for_plot')
     ######################
@@ -243,7 +244,7 @@ def nlp_article_semantic(file):
             score = sent.sentiment.polarity #to jest dla zdania
             scores.append(score)
             absa_scores[k].append(score)
-            print("sent", sent)
+            # print("sent", sent)
 
     print("absa_list", absa_list)
     litecoin_list=[]
@@ -312,10 +313,10 @@ def nlp_article_semantic(file):
     final_list.append(sent4)
 
     df_scores_polarity=pd.DataFrame(scores, columns=["sentence_polarity"])
-    print("sentence_polarity", df_scores_polarity)
+    # print("sentence_polarity", df_scores_polarity)
 
     final_df=pd.DataFrame(final_list, columns=['Coin', 'Sentence', 'Sentence sentiment analysis' ])
-    final_df["ommit"]=range(len(frequent_features)) #to jest tylko po to zeby BQ rozpoznawal nazwy kolumn
+    final_df["ommit"]=range(len(final_df)) #to jest tylko po to zeby BQ rozpoznawal nazwy kolumn
     # print("range", range(len(frequent_features)))
     print("sentiment_scores", sentiment_scores)
     print('frequent_features', frequent_features)
@@ -338,12 +339,6 @@ def nlp_article_semantic(file):
     import matplotlib.pyplot as plt
     import pandas as pd
 
-    # noun=['positive attitude','good job knowledge','team player','customer acquisition','good visibility','back office process','successful launch','soft skills','suitable candidates','core issues']
-    # pos_l=[0.71,0.42,0.3,0.2,0.2,0.6,0.2,0.5,0.43,0]
-    # neg_l=[-0.1,0,-0.300,0,-0.1,0,-0.1,-0.2,0,-0.3]
-
-    # pos = nltk_df[0:5]['pos']
-    # neg = nltk_df[0:5]['neg']
 
     # data to plot
     n_groups = len(frequent_features)
@@ -369,7 +364,7 @@ def nlp_article_semantic(file):
     plt.xlabel('Features')
     plt.ylabel('sentiment value')
     plt.title('Top features and its sentiment')
-    plt.xticks(index + bar_width, nltk_df2['text'].head(5))
+    plt.xticks(index + bar_width, nltk_df2['text'])
     plt.legend()
     fig.set_size_inches(15, 10)
     plt.show()

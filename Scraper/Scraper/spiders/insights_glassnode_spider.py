@@ -38,6 +38,8 @@ class InsightsGlassnodeSpider(scrapy.Spider):
 
         item['article_text']=[i.replace("\t", "").replace("\n", "") for i in item['article_text']]
         item['article_text']=[i.replace("\u00A0", " ") for i in item['article_text']]
+        item['article_name'] = item['article_name'].replace("\n", "").replace("\t", "").replace("  ", "")
+        # item['article_name'] = [i.replace("\u00A0", " ") for i in item['article_name']]
 
         # item['article_text_2'] = list(item['article_text_2'])
         # item['article_text'] = [i.replace("\", " ") for i in item['article_text']]

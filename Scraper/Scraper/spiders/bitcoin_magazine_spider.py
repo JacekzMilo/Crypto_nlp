@@ -9,7 +9,7 @@ import sys
 
 class BitcoinMagazineSpider(scrapy.Spider):
     # Name of the spider as mentioned in the "genspider" command
-    name = 'bitcoin_spider'
+    name = 'bitcoin_magazine_spider'
     # Domains allowed for scraping, as mentioned in the "genspider" command
     allowed_domains = ['www.bitcoinmagazine.com', 'bitcoinmagazine.com']
     # URL(s) to scrape as mentioned in the "genspider" command
