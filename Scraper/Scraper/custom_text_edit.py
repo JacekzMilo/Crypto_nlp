@@ -44,14 +44,15 @@ def customtextfunc(file):
 
         data_df =pd.DataFrame(data=[replaced_string] ,columns=["article_text"])
 
-
-        dict1 = {"article_name": data["article_name"][0]}
+        dict1 = {"article_name": data["article_name"][j]}
 
         df1 = pd.DataFrame(dict1, index=[0])
+
         # print("df1_przed_petlami", df1)
         if j == 0:
-            article_text_df = data_df
+            # article_text_df = data_df
             # print("article_text_j=0", article_text_df)
+            df2 = df1
             df1.to_csv(
                 r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
                 index=False, header=True)
@@ -61,9 +62,11 @@ def customtextfunc(file):
                 index=False, header=True)
         else:
             article_name_df=pd.DataFrame(data=[data["article_name"][j]], columns=["article_name"])
-            # print("article_df", article_df)
+            print("article_name_df", article_name_df)
             df1 = df1.append(article_name_df)
-            # print("df1", df1)
+            # pd.concat([df1, article_name_df], axis=0)
+                #
+            print("df1", df1)
             df1.to_csv(
                 r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
                 index=False, header=True)
@@ -102,7 +105,7 @@ def customtextfunc(file):
         index=False, header=True)
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
-    load(filename, 'article')
+    # load(filename, 'article')
 
 def article_translation(file):
 
@@ -119,7 +122,7 @@ def article_translation(file):
         return text_str_translated.text
 
 
-    j=0
+    j = 0
     for i in df["article_text"]:
         text = df["article_text"].loc[j]
         text_translated = translate(text)

@@ -7,7 +7,8 @@ from scrapy.crawler import CrawlerProcess
 # from Crypto_nlp.Scraper.Scraper import settings
 # from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
-from Crypto_nlp.Scraper.Scraper.spiders import zrozumiecbitc, bitcoin_spider
+from Crypto_nlp.Scraper.Scraper.spiders import zrozumiecbitc, bitcoin_spider, insights_glassnode_spider, coin_desk_spider, \
+    bitcoin_magazine_spider, the_block_spider, the_defiant_spider, blockworks_spider
 import os
 import pandas as pd
 from time import sleep
@@ -22,8 +23,13 @@ from twisted.internet import reactor, defer
 #
 # settings_file_path = 'Scraper.settings' # The path seen from root, ie. from main.py
 # os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
-# crawlers = [zrozumiecbitc.ZrozumiecbitcSpider, bitcoin_spider.BitcoinSpider]
+# crawlers = [zrozumiecbitc.ZrozumiecbitcSpider, bitcoin_spider.BitcoinSpider,
+#             insights_glassnode_spider.InsightsGlassnodeSpider,
+#             coin_desk_spider.CoinDeskSpider, bitcoin_magazine_spider.BitcoinMagazineSpider
+#             ]
+# ####### OGARNIJ TE: the_block_spider.TheBlockSpider i the_defiant_spider.TheDefiantSpider i blockworks_spider.BlockWorksSpider
 #
+# #coindeskspider ma zahardkodowany zakres div, nie koniecznie musi sie zgadzac w nowych artykulach, do sprawdzenia
 #
 # def start_sequentially(process: CrawlerProcess, crawlers: list):
 #     print('start crawler {}'.format(crawlers[0].__name__))
@@ -51,8 +57,8 @@ customtextfunc(file)
 # #######################
 # #######################Tlumaczy na angielski, tworzy plik article_translated.csv i wrzuca w oddzielna tabele w BQ: article_translated
 #
-filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
-article_translation(filename)
+# filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
+# article_translation(filename)
 #
 # #######################
 
@@ -62,7 +68,7 @@ article_translation(filename)
 # #Następnie tworzy plik feature_polarity_calculations_df.csv i wrzuca do tabeli sentence_polarity_hisogram_plot i z tego tworzy wykres boxplot.
 #
 #
-nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
+# nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
 # nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_eng_ja_edytowalem_recznie.json")
 # #######################
 

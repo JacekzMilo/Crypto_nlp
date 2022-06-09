@@ -27,7 +27,6 @@ class BitcoinSpider(scrapy.Spider):
         # yield {"meta": response}
         yield response.follow(url=link, callback=self.parse_bitcoin_spider, meta={'bitcoin_spider_title': title})
 
-    # start_urls=['https://markets.businessinsider.com/news']
 
     def parse_bitcoin_spider(self, response):
         item = BitcoinSpiderItem()
@@ -38,8 +37,7 @@ class BitcoinSpider(scrapy.Spider):
         item['article_text']=[i.replace("\t", "").replace("\n", "") for i in item['article_text']]
         item['article_text']=[i.replace("\u00A0", " ") for i in item['article_text']]
 
-        # item['article_text_2'] = list(item['article_text_2'])
-        # item['article_text'] = [i.replace("\", " ") for i in item['article_text']]
+
         yield item
         logging.info(response.url)
 

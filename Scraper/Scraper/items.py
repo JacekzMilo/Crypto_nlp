@@ -16,3 +16,7 @@ class BitcoinSpiderItem(scrapy.Item):
     article_text = scrapy.Field()
     article_name = scrapy.Field()
     # title = scrapy.Field()
+
+class InsightsGlassnodeItem(scrapy.Item):
+    article_text = scrapy.Field()
+    article_name = scrapy.Field()
