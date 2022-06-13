@@ -19,18 +19,21 @@ class BitcoinSpider(scrapy.Spider):
             'jsonlines': 'scrapy.exporters.JsonItemExporter'}, 'FEED_EXPORT_ENCODING': 'utf-8'}
 
     def parse(self, response):
+        base_url = 'https://markets.businessinsider.com'
         bitcoin_spider = response.xpath('//*[@id="instrument-detail-news"]/section/div[1]/h3/a')
-        for bitc in bitcoin_spider:
-            title = bitcoin_spider.xpath(".//text()").get()
-            link = bitcoin_spider.xpath(".//@href").get()
+        # for bitc in bitcoin_spider:
+        title = bitcoin_spider.xpath(".//text()").get()
+        link = bitcoin_spider.xpath(".//@href").get()
+        full_url = base_url + link
         # yield {"link": link, "title": title}
         # yield {"meta": response}
-        yield response.follow(url=link, callback=self.parse_bitcoin_spider, meta={'bitcoin_spider_title': title})
+        yield response.follow(url=link, callback=self.parse_bitcoin_spider, meta={'bitcoin_spider_title': title, 'bitcoin_spider_link': full_url})
 
 
     def parse_bitcoin_spider(self, response):
         item = BitcoinSpiderItem()
         item['article_name'] = response.request.meta['bitcoin_spider_title']
+        item['article_link'] = response.request.meta['bitcoin_spider_link']
         articles = response.xpath('(//div[@id="piano-inline-content-wrapper"])')
         # for article in articles:
         item['article_text'] = articles.xpath(".//p//text()").getall()

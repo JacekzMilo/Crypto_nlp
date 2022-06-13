@@ -22,18 +22,22 @@ class TheDefiantSpider(scrapy.Spider):
     for i in range(len(start_urls)):
         if i == 0:
             def parse(self, response):
+                base_url = ['https://thedefiant.io/layer-1-solana']
                 the_defiant_spider = response.xpath('//*[@id="uc_post_list_elementor10262"]/div[1]/div[2]/div/div[1]')
                 # for bitc in bloomberg_spider:
                 title = the_defiant_spider.xpath(".//a/text()").get()
                 link = the_defiant_spider.xpath(".//a/@href").get()
+                full_url = base_url + link
                 # yield {"link": link, "title": title}
                 # yield {"meta": response}
-                yield response.follow(url=link, callback=self.parse_the_defiant_spider, meta={'the_defiant_spider_title': title})
+                yield response.follow(url=link, callback=self.parse_the_defiant_spider, meta={'the_defiant_spider_title': title, 'the_defiant_spider_link': full_url})
 
 
             def parse_the_defiant_spider(self, response):
                 item = BitcoinSpiderItem()
                 item['article_name'] = response.request.meta['the_defiant_spider_title']
+                item['article_link'] = response.request.meta['the_defiant_spider_link']
+
                 articles = response.xpath('(//*[@id="content"]/div/div/div/section[1]/div/div/div[2]/div/div/div[7]/div)')
                 # for article in articles:
                 item['article_text'] = articles.xpath(".//p//text()").getall()
@@ -45,12 +49,16 @@ class TheDefiantSpider(scrapy.Spider):
                 logging.info(response.url)
         else:
             def parse(self, response):
+                base_url = ['https://thedefiant.io/layer-1-ethereum/']
+
                 the_defiant_spider = response.xpath('//*[@id="uc_post_list_elementor13294"]/div[1]/div[2]/div/div[1]')
                 # // *[ @ id = "uc_post_list_elementor13294"] / div[1] / div[2] / div / div[1] / a
 
                 # for bitc in bloomberg_spider:
                 title = the_defiant_spider.xpath(".//a//text()").get()
                 link = the_defiant_spider.xpath(".//a//@href").get()
+                full_url = base_url + link
+
                 yield {"link": link, "title": title}
                 yield {"meta": response}
                 # yield response.follow(url=link, callback=self.parse_the_defiant_spider, meta={'the_defiant_spider_title': title})

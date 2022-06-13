@@ -21,18 +21,22 @@ class CoinDeskSpider(scrapy.Spider):
     for i in range(len(start_urls)):
         if i == 0:
             def parse(self, response):
+                base_url = 'https://www.coindesk.com'
                 coin_desk_spider = response.xpath('//*[@id="fusion-app"]/div/div[2]/div/main/section[1]/div/div[1]/div[2]/div[1]/div[1]/div/div[2]/h3/a')
                 for bitc in coin_desk_spider:
                     title = coin_desk_spider.xpath(".//text()").get()
                     link = coin_desk_spider.xpath(".//@href").get()
+                    full_url = base_url + link
                 # yield {"link": link, "title": title}
                 # yield {"meta": response}
-                yield response.follow(url=link, callback=self.parse_coin_desk_spider, meta={'coin_desk_spider_title': title})
+                yield response.follow(url=link, callback=self.parse_coin_desk_spider, meta={'coin_desk_spider_title': title, 'coin_desk_spider_link': full_url})
 
 
             def parse_coin_desk_spider(self, response):
                 item = BitcoinSpiderItem()
                 item['article_name'] = response.request.meta['coin_desk_spider_title']
+                item['article_link'] = response.request.meta['coin_desk_spider_link']
+
                 articles = response.xpath('(//*[@id="fusion-app"]/div/div[2]/main/div[1]/div/section/div/div[3]/div[1]/div)') #[9:33]
 
                 item['article_text'] = articles.xpath(".//div/*//text()").getall()
@@ -45,19 +49,24 @@ class CoinDeskSpider(scrapy.Spider):
 
         if i !=0:
             def parse(self, response):
+                base_url = 'https://www.coindesk.com'
                 coin_desk_spider = response.xpath(
                     '//*[@id="fusion-app"]/div/div[2]/div/main/section[1]/div/div[1]/div[2]/div[1]/div[1]/div/div[2]/h3/a')
-                for bitc in coin_desk_spider:
-                    title = coin_desk_spider.xpath(".//text()").get()
-                    link = coin_desk_spider.xpath(".//@href").get()
+                # for bitc in coin_desk_spider:
+                title = coin_desk_spider.xpath(".//text()").get()
+                link = coin_desk_spider.xpath(".//@href").get()
+                full_url = base_url + link
+
                 # yield {"link": link, "title": title}
                 # yield {"meta": response}
                 yield response.follow(url=link, callback=self.parse_coin_desk_spider,
-                                      meta={'coin_desk_spider_title': title})
+                                      meta={'coin_desk_spider_title': title, 'coin_desk_spider_link': full_url})
 
             def parse_coin_desk_spider(self, response):
                 item = BitcoinSpiderItem()
                 item['article_name'] = response.request.meta['coin_desk_spider_title']
+                item['article_link'] = response.request.meta['coin_desk_spider_link']
+
                 articles = response.xpath(
                     '(//*[@id="fusion-app"]/div/div[2]/main/div[1]/div/section/div/div[3]/div[1]/div)')
 

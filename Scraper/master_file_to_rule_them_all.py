@@ -27,6 +27,7 @@ crawlers = [zrozumiecbitc.ZrozumiecbitcSpider, bitcoin_spider.BitcoinSpider,
             insights_glassnode_spider.InsightsGlassnodeSpider,
             coin_desk_spider.CoinDeskSpider, bitcoin_magazine_spider.BitcoinMagazineSpider
             ]
+
 ####### OGARNIJ TE: the_block_spider.TheBlockSpider i the_defiant_spider.TheDefiantSpider i blockworks_spider.BlockWorksSpider
 
 #coindeskspider ma zahardkodowany zakres div, nie koniecznie musi sie zgadzac w nowych artykulach, do sprawdzenia
@@ -47,8 +48,7 @@ process.start()
 # print(output)
 #######################
 
-# # sleep(0.5)
-# ####################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
+####################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
 # #wrzuca do tabeli article oryginalny text ze strony do tabeli article
 #
 file ='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json'
@@ -69,7 +69,6 @@ article_translation(filename)
 #
 #
 nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
-# nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_eng_ja_edytowalem_recznie.json")
 # #######################
 
 

@@ -4,7 +4,7 @@ from nltk.tokenize import RegexpTokenizer
 from googletrans import Translator
 from Crypto_nlp.Load_to_GCP import load
 from time import sleep
-
+from io import StringIO
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
@@ -24,7 +24,7 @@ def customtextfunc(file):
     with open(f'{file}', 'r', encoding='utf8') as f:
         data = f.read()
     df = data.replace('][', ',')
-    data = pd.read_json(df)
+    data = pd.read_json(StringIO(df))
 
     # Function to convert list to string
     def listToString(s):
@@ -64,10 +64,21 @@ def customtextfunc(file):
             # print('article_name_df1', article_name_df1)
         j+=1
 
-        article_name_df1.to_csv(
-                r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
-                index=False, header=True)
 
+        # article_name_df2 = pd.concat([article_name_df1, article_link], axis=1)
+
+
+    article_name_df1.reset_index(inplace=True)
+    # print("article_name_df1", article_name_df1)
+
+    article_link = pd.DataFrame(data['article_link'])
+    # print("article_link", article_link)
+
+    article_name_df1 = pd.concat([article_link, article_name_df1], axis=1).drop(columns=['index'])
+    # print("article_name_df1", article_name_df1)
+    article_name_df1.to_csv(
+        r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
+        index=False, header=True)
 
     article_name_df = pd.read_csv('C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv', encoding="utf8")
 
@@ -91,6 +102,7 @@ def customtextfunc(file):
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
     load(filename, 'article')
+    print("Oryginalny tekst wyczyszczony, zapisany jako Scraped_data.csv i wrzucoy do tabeli article" )
 
 
 def article_translation(file):
@@ -121,7 +133,7 @@ def article_translation(file):
         else:
             text_translated_df1 = pd.concat([text_translated_df1, text_translated_df], axis=0)
             # print("drugra runda")
-            print('text_translated_df', text_translated_df1)
+            # print('text_translated_df', text_translated_df1)
         j+=1
 
     j = 0
@@ -138,10 +150,15 @@ def article_translation(file):
         else:
             article_name_translated_df1 = pd.concat([article_name_translated_df1, article_name_translated_df], axis=0)
             # print("drugra runda")
-            print('article_name_translated_df', article_name_translated_df1)
+            # print('article_name_translated_df', article_name_translated_df1)
         j += 1
 
-    text_translated_all = pd.concat([article_name_translated_df1, text_translated_df1], axis=1)
+    article_link = pd.DataFrame(df['article_link'])
+    article_name_translated_df1.reset_index(inplace=True)
+    text_translated_df1.reset_index(inplace=True)
+
+
+    text_translated_all = pd.concat([article_name_translated_df1, text_translated_df1, article_link], axis=1).drop(columns=['index'])
     print('text_translated_all', text_translated_all)
 
     text_translated_all["ommit"]=range(len(text_translated_all))

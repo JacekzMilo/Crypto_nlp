@@ -19,18 +19,23 @@ class InsightsGlassnodeSpider(scrapy.Spider):
             'jsonlines': 'scrapy.exporters.JsonItemExporter'}, 'FEED_EXPORT_ENCODING': 'utf-8'}
 
     def parse(self, response):
+        base_url = 'https://insights.glassnode.com'
         insights_glassnode_spider = response.xpath('//*[@id="site-main"]/div/div/article[1]/div/a')
-        for bitc in insights_glassnode_spider:
-            title = insights_glassnode_spider.xpath(".//header/h2/text()").get()
-            link = insights_glassnode_spider.xpath(".//@href").get()
+        # for bitc in insights_glassnode_spider:
+        title = insights_glassnode_spider.xpath(".//header/h2/text()").get()
+        link = insights_glassnode_spider.xpath(".//@href").get()
+        full_link = base_url+link
+
         # yield {"link": link, "title": title}
         # yield {"meta": response}
-        yield response.follow(url=link, callback=self.parse_insights_glassnode_spider, meta={'insights_glassnode_spider_title': title})
+        yield response.follow(url=link, callback=self.parse_insights_glassnode_spider, meta={'insights_glassnode_spider_title': title, 'insights_glassnode_spider_link': full_link})
 
 
     def parse_insights_glassnode_spider(self, response):
         item = InsightsGlassnodeItem()
         item['article_name'] = response.request.meta['insights_glassnode_spider_title']
+        item['article_link'] = response.request.meta['insights_glassnode_spider_link']
+        response.url
         articles = response.xpath('(//*[@id="site-main"]/article)')
         # for article in articles:
         item['article_text'] = articles.xpath(".//header/p/text()").getall()

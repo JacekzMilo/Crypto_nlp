@@ -26,12 +26,14 @@ class BlockWorksSpider(scrapy.Spider):
         link = block_works_spider.xpath(".//a//@href").get()
         # yield {"link": link, "title": title}
         # yield {"meta": response}
-        yield response.follow(url=link, callback=self.parse_block_works_spider, meta={'block_works_spider_title': title})
+        yield response.follow(url=link, callback=self.parse_block_works_spider, meta={'block_works_spider_title': title, 'block_works_spider_link': link})
 
 
     def parse_block_works_spider(self, response):
         item = BitcoinSpiderItem()
         item['article_name'] = response.request.meta['block_works_spider_title']
+        item['article_link'] = response.request.meta['block_works_spider_link']
+
         articles = response.xpath('(/html/body/div[3]/div[2]/div[2]/div[2]')
         # for article in articles:
         item['article_text'] = articles.xpath(".//p//text()").getall()

@@ -5,8 +5,6 @@ import os.path
 from pathlib import Path
 import sys
 
-
-
 class BitcoinMagazineSpider(scrapy.Spider):
     # Name of the spider as mentioned in the "genspider" command
     name = 'bitcoin_magazine_spider'
@@ -19,18 +17,22 @@ class BitcoinMagazineSpider(scrapy.Spider):
             'jsonlines': 'scrapy.exporters.JsonItemExporter'}, 'FEED_EXPORT_ENCODING': 'utf-8'}
 
     def parse(self, response):
+        base_url = 'https://bitcoinmagazine.com/business'
         bitcoin_magazine_spider = response.xpath('//*[@id="main-content"]/section[3]/phoenix-hub/section[1]/phoenix-non-personalized-recommendations-tracking/div[1]/phoenix-super-link/phoenix-card/div[2]/phoenix-ellipsis')
-        for bitc in bitcoin_magazine_spider:
-            title = bitcoin_magazine_spider.xpath(".//a/h2//text()").get()
-            link = bitcoin_magazine_spider.xpath(".//a/@href").get()
+        # for bitc in bitcoin_magazine_spider:
+        title = bitcoin_magazine_spider.xpath(".//a/h2//text()").get()
+        link = bitcoin_magazine_spider.xpath(".//a/@href").get()
+        full_url = base_url + link
         # yield {"link": link, "title": title}
         # yield {"meta": response}
-        yield response.follow(url=link, callback=self.parse_bitcoin_magazine_spider, meta={'bitcoin_magazine_spider_title': title})
+        yield response.follow(url=link, callback=self.parse_bitcoin_magazine_spider, meta={'bitcoin_magazine_spider_title': title, 'bitcoin_magazine_spider_link': full_url})
 
 
     def parse_bitcoin_magazine_spider(self, response):
         item = BitcoinSpiderItem()
         item['article_name'] = response.request.meta['bitcoin_magazine_spider_title']
+        item['article_link'] = response.request.meta['bitcoin_magazine_spider_link']
+
         articles = response.xpath('(//*[@id="main-content"]/section[1]/article/div/div/section/div[1]/div[3])')
         # for article in articles:
         item['article_text'] = articles.xpath(".//ul/li//text()").getall()

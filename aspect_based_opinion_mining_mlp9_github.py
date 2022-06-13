@@ -228,10 +228,11 @@ def nlp_article_semantic(file):
     nltk_df2.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv',
         index=False, header=True)
-    print("Tekst przeanalizowany i zapisany jako article_semantics_results_for_plot.csv")
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv'
-    load(filename, 'results_for_plot')
+    # load(filename, 'results_for_plot')
+    # print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_for_plot.csv i wrzucony do tabeli results_for_plot")
+
     ######################
 
     scores = list()
@@ -247,38 +248,18 @@ def nlp_article_semantic(file):
             # print("sent", sent)
 
     print("absa_list", absa_list)
-    litecoin_list=[]
-    polkadot_list=[]
-    bitcoin_list=[]
-    stellar_list=[]
-    dogecoin_list=[]
-    binance_list=[]
-    tether_list=[]
-    monero_list=[]
-    solana_list=[]
-    avalanche_list=[]
-    chainlink_list=[]
-    algorand_list=[]
-    polygon_list=[]
-    vechain_list=[]
-    tron_list=[]
-    zcash_list=[]
-    eos_list=[]
-    tezos_list=[]
-    neo_list=[]
-    stacks_list=[]
-    nem_list=[]
-    decred_list=[]
-    storj_list=[]
-    x_list=[]
-    digibyte_list=[]
-    sent_all=[]
 
     # print('sentences', sentences)
     frequent_features_str=" ".join(str(x) for x in frequent_features)
 
-    # final_dic={"Coin": [], "Sentence": [], "Sentence sentiment analysis": []}
-    # final_df=pd.DataFrame.from_dict(final_dic)
+
+
+    sent_all=[]
+    coin_list=[]
+    sentence_sentiment_list=[]
+    final_list=[]
+    coin_dic = {}
+    sem_dic = {}
 
     i=0
     for sent in sentences:
@@ -286,44 +267,87 @@ def nlp_article_semantic(file):
         for coin in frequent_features:
             # print("coin", coin)
             if coin in sent:
-                if coin == "bitcoin":
-                    bitcoin_list.append(nltk_results[i])
-                    sent2 = [coin]
-                    sent_all.append([sent])
-                    sent2.append(sent_all)
-                    sent2.append(bitcoin_list)
+                sentence_sentiment_list.append(nltk_results[i])
+                coin_list.append(coin)
+                sem_dic = {"Sentence sentiment analysis": sentence_sentiment_list, "Coin": coin_list}
 
-                if coin == "polkadot":
-                    polkadot_list.append(nltk_results[i])
-                    sent3 = [coin]
-                    sent3.append([sent])
-                    sent3.append(polkadot_list)
+                final_list.append(coin)
+                sent_all.append(sent)
+                coin_dic = {"Coin": coin_list, "Sentence": sent_all}
+                i+=1
 
-                if coin == "chainlink":
-                    chainlink_list.append(nltk_results[i])
-                    sent4 = [coin]
-                    sent4.append([sent])
-                    sent4.append(chainlink_list)
+                # if coin == "bitcoin":
+                #     bitcoin_list.append(nltk_results[i])
+                #     sent2 = [coin]
+                #     sent_all.append([sent])
+                #     sent2.append([sent_all])
+                #     sent2.append(bitcoin_list)
+                #
+                # if coin == "polkadot":
+                #     polkadot_list.append(nltk_results[i])
+                #     sent3 = [coin]
+                #     sent3.append([sent])
+                #     sent3.append(polkadot_list)
+                #
+                # if coin == "chainlink":
+                #     chainlink_list.append(nltk_results[i])
+                #     sent4 = [coin]
+                #     sent4.append([sent])
+                #     sent4.append(chainlink_list)
 
-        i += 1
-    final_list=[]
+    # print("sem_dic", sem_dic)
+    # print("coin_dic", coin_dic)
+    # print("sentence_sentiment_list", sentence_sentiment_list)
+    # print("Len sent_all", len(sent_all))
 
-    final_list.append(sent2)
-    final_list.append(sent3)
-    final_list.append(sent4)
+
+    final_df_1=pd.DataFrame.from_dict(coin_dic)
+    final_df_1_grupped = final_df_1.groupby('Coin')
+    final_df_lists1 = final_df_1_grupped['Sentence'].apply(list).reset_index()
+
+    final_df_2=pd.DataFrame.from_dict(sem_dic)
+    final_df_2_grupped = final_df_2.groupby('Coin')
+    final_df_lists2 = final_df_2_grupped['Sentence sentiment analysis'].apply(list).reset_index().drop(columns=["Coin"])
+    final_df_lists2 = final_df_lists2
+    final_df_lists3 = pd.DataFrame(final_df_lists2)
+        # print("final_df_lists1", final_df_lists1)
+        # print("final_df_lists3", final_df_lists3)
+
+    final_df_lists =  pd.concat([final_df_lists1, final_df_lists3],axis=1)
+
+    print("final_df_lists", final_df_lists)
+    # print("nltk_sentiment", nltk_sentiment("first and foremost bitcoin miners selling bitcoin isn ’ t an issue to me."))
+
+    final_df_lists["ommit"]=range(len(final_df_lists)) #to jest tylko po to zeby BQ rozpoznawal nazwy kolumn
+
+    final_df_lists.to_csv(
+        r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_aggregaded.csv',
+        index=False, header=True)
+    filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_aggregaded.csv'
+    load(filename, 'results_aggregaded')
+    print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_aggregaded.csv i wrzucony do tabeli results_aggregaded")
+
+    # final_list.append(sent2)
+    # final_list.append(sent3)
+    # final_list.append(sent4)
+    # final_df=pd.DataFrame(final_list)
+
+    # print("final_df:")
+    # print(final_df)
 
     df_scores_polarity=pd.DataFrame(scores, columns=["sentence_polarity"])
     # print("sentence_polarity", df_scores_polarity)
 
-    final_df=pd.DataFrame(final_list, columns=['Coin', 'Sentence', 'Sentence sentiment analysis' ])
-    final_df["ommit"]=range(len(final_df)) #to jest tylko po to zeby BQ rozpoznawal nazwy kolumn
+
     # print("range", range(len(frequent_features)))
     print("sentiment_scores", sentiment_scores)
     print('frequent_features', frequent_features)
     print("Aspect Specific sentences:")
     print(absa_list)
-    print("final_df:")
-    print(final_df)
+
+    # print('final_df')
+    # print(final_df)
+
     # print("nltk_df")
     # print(nltk_df)
     print("scores", scores)
@@ -436,7 +460,8 @@ def nlp_article_semantic(file):
         index=False, header=True)
     # sleep(1)
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/sentence_polarity_hisogram_plot.csv'
-    load(filename, 'sentence_polarity_distribution_plot')
+    # load(filename, 'sentence_polarity_distribution_plot')
+    # print("Przetłumaczony tekst przeanalizowany, zapisany jako sentence_polarity_hisogram_plot.csv i wrzucony do tabeli sentence_polarity_distribution_plot")
 
 
     #Obliczanie kwartali zeby dalo sie narysowac boxplot w DS
@@ -486,7 +511,8 @@ def nlp_article_semantic(file):
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df.csv',
         index=False, header=True)
     filename='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df.csv'
-    load(filename, 'sentence_polarity_hisogram_plot')
+    # load(filename, 'sentence_polarity_hisogram_plot')
+    # print("Przetłumaczony tekst przeanalizowany, zapisany jako feature_polarity_calculations_df.csv i wrzucony do tabeli sentence_polarity_hisogram_plot")
 #########################
 
 
