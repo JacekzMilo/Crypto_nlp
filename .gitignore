@@ -5,7 +5,7 @@
 /Old/
 /word2vec/
 /word2vec_pretrained_aspect_sentiment/
-/nlpdb.sqbpro
-/nlpdb.db
-/Load_to_GCP.py
-/nlp_plot.py
+nlpdb.sqbpro
+nlpdb.db
+Load_to_GCP.py
+nlp_plot.py
