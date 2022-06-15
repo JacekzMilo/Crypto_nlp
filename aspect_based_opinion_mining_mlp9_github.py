@@ -23,7 +23,8 @@ def nlp_article_semantic(file):
     # print("df", df)
     # print("df['article_text']", df["article_text"])
     result = df["article_text"]
-# ########################
+    # print("result", result)
+    # ########################
 # text cleaning
     from string import punctuation
     import re
@@ -54,7 +55,8 @@ def nlp_article_semantic(file):
             result_after_clean2 = (pd.Series(clean_sentence(i)))
             result_after_clean = pd.concat([result_after_clean, result_after_clean2], axis=0)
         j+=1
-    # print('result_after_clean2', result_after_clean)
+
+    print('result_after_clean2', result_after_clean)
     result=result_after_clean
     # Check sentiment polarity of each sentence.
     sentiment_scores = list()
@@ -186,7 +188,9 @@ def nlp_article_semantic(file):
 
     absa_list = dict()
     sentences=[]
+    id_df = df['id']
 
+    i = range(len(df['id']))
     # For each frequent feature
     for f in frequent_features:
         q = '|'.join(f.split())
@@ -194,7 +198,15 @@ def nlp_article_semantic(file):
         absa_list[f] = list()
         # for i in result:
         for comment in result:
+            # for i in df['id']:
+            comment_id = [comment] + list(df['id'][i])
+            print('comment_id', comment_id)
             blob = TextBlob(comment)
+            # print("id_df", id_df)
+            # print("type(id_df)", type(id_df))
+            # print("comment", type(comment))
+            # print("comment", comment)
+
             # For each sentence of the comment
             for sentence in blob.sentences:
                 # Search for frequent feature 'f'
@@ -202,6 +214,7 @@ def nlp_article_semantic(file):
                 if re.search(r'\w*(' + str(q) + ')\w*', str(sentence)):
                     absa_list[f].append(sentence)
                     sentences.append(sentence)
+                    i+=1
 
 
     # print("sentences", sentences)
@@ -324,7 +337,7 @@ def nlp_article_semantic(file):
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_aggregaded.csv',
         index=False, header=True)
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_aggregaded.csv'
-    load(filename, 'results_aggregaded')
+    # load(filename, 'results_aggregaded')
     print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_aggregaded.csv i wrzucony do tabeli results_aggregaded")
 
     # final_list.append(sent2)
