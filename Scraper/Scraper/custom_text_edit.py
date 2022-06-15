@@ -25,7 +25,7 @@ def customtextfunc(file):
         data = f.read()
     df = data.replace('][', ',')
     data = pd.read_json(StringIO(df))
-    print()
+
     # Function to convert list to string
     def listToString(s):
         # initialize an empty string
@@ -75,29 +75,7 @@ def customtextfunc(file):
     # print("article_link", article_link)
 
     article_name_df1 = pd.concat([article_link, article_name_df1], axis=1).drop(columns=['index'])
-    article_name_df1['id'] = int()
-
-    ##########################
-    #ID generator
-    def count_non_digits(s):
-        count = 0
-        for i in range(len(s)):
-            if not s[i].isdigit():
-                count = count + 1
-
-        return count
-    i=0
-    for c in article_name_df1['article_name']:
-        article_name_df1['id'][i:] = count_non_digits(c)+1000
-        print(count_non_digits(c)+1000)
-        i+=1
-
-    first_col = article_name_df1.pop("id")
-    article_name_df1.insert(0, 'id', first_col)
-    ##########################
-
-    print("article_name_df1", article_name_df1)
-
+    # print("article_name_df1", article_name_df1)
     article_name_df1.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data_no_quotes1.csv',
         index=False, header=True)
@@ -116,7 +94,7 @@ def customtextfunc(file):
     f.close()
 
     #to jest potrzebne zeby BQ rozkminił nagłowki tabel, do pominięcia przy wykresach
-    # df_total["ommit"]=range(len(df_total))
+    df_total["ommit"]=range(len(df_total))
     # print("df_total", df_total)
     df_total.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv',
@@ -178,13 +156,12 @@ def article_translation(file):
     article_link = pd.DataFrame(df['article_link'])
     article_name_translated_df1.reset_index(inplace=True)
     text_translated_df1.reset_index(inplace=True)
-    id_df = pd.DataFrame(df['id'])
 
 
-    text_translated_all = pd.concat([id_df, article_name_translated_df1, text_translated_df1, article_link], axis=1).drop(columns=['index'])
+    text_translated_all = pd.concat([article_name_translated_df1, text_translated_df1, article_link], axis=1).drop(columns=['index'])
     print('text_translated_all', text_translated_all)
 
-    # text_translated_all["ommit"]=range(len(text_translated_all))
+    text_translated_all["ommit"]=range(len(text_translated_all))
 
     text_translated_all.to_csv(r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv', index = False, header=True)
 

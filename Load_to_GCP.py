@@ -8,7 +8,7 @@ import os
 def load(filename, table_name):
     load_dotenv()
     os.environ[
-        "GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/NLP_algorithm_auth_key/cryptonlp-333511-af601ce35e91.json"
+        "GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/NLP_algorithm_auth_key/cryptonlp-333511-5df889e063ad.json"
 
     client = bigquery.Client()
     project = client.project
