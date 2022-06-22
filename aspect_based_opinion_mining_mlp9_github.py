@@ -183,60 +183,87 @@ def nlp_article_semantic(file):
     newdf=pd.DataFrame({'features':nltk_df[0],'pos':nltk_df['pos'],'neg':nltk_df['neg']})
     newdf.pos=newdf.pos+0.2
     newdf.neg=newdf.neg-0.2
-    # print('newdf', newdf)
-
 
     absa_list = dict()
     sentences=[]
-    id_df = df['id']
+    sent_list=[]
+    comment_id=[]
 
-    i = range(len(df['id']))
+    i=0
+    for comment in result:
+        comment_ser = [[comment]]
+        # print('comment_ser', comment_ser)
+        comment_ser.append([df['id'][i]])
+        comment_id.append(comment_ser)
+        # print('comment_id', comment_id)
+        i += 1
+
+
     # For each frequent feature
-    for f in frequent_features:
-        q = '|'.join(f.split())
-        # For each key word
-        absa_list[f] = list()
-        # for i in result:
-        for comment in result:
-            # for i in df['id']:
-            comment_id = [comment] + list(df['id'][i])
-            print('comment_id', comment_id)
-            blob = TextBlob(comment)
-            # print("id_df", id_df)
-            # print("type(id_df)", type(id_df))
-            # print("comment", type(comment))
-            # print("comment", comment)
+    j = 0
+    for i in comment_id:
+        for articl in i[0]:
+            blob = TextBlob(articl)
+            art_sent = []
+            for f in frequent_features:
+                q = '|'.join(f.split())
+                # For each key word
+                absa_list[f] = list()
+                # For each sentence of the comment
+                for sentence in blob.sentences:
+                    # Search for frequent feature 'f'
+                    if re.search(r'\w*(' + str(q) + ')\w*', str(sentence)):
+                        absa_list[f].append(sentence)
+                        art_sent.append([sentence])
 
-            # For each sentence of the comment
-            for sentence in blob.sentences:
-                # Search for frequent feature 'f'
-                # print("str(q)", str(q))
-                if re.search(r'\w*(' + str(q) + ')\w*', str(sentence)):
-                    absa_list[f].append(sentence)
-                    sentences.append(sentence)
-                    i+=1
+            if art_sent:
+
+                art_sent.append(comment_id[j][1])
+                sent_list.append(art_sent)
+                j += 1
+
+            else:
+                j += 1
 
 
-    # print("sentences", sentences)
-    # print("absa_list", absa_list)
+    id_list=[]
+    print('sent_list', sent_list)
+    # print('sent_only', sent_only)
 
-    sentences=" ".join(str(x) for x in sentences)
-    from nltk.tokenize import sent_tokenize
-    sentences=sent_tokenize(sentences)
+    for i in sent_list:
+        for j in i[: -1]:
+            sentences.append(" ".join(str(x) for x in j))
+        id_list.append([x for x in i[-1]])
 
-    # print('sentences', sentences)
-    # print("absa_list[f]", absa_list.values())
+    # print('sentences2', sentences)
+    # print('id_list', id_list)
+
+    print("absa_list.values", absa_list.values())
 
     ###################### tu jest analiza sentymentu zdan w odniesieniu do slow kluczowych i wrzuca DF do BQ w tabele results_for_plot
     nltk_results = [nltk_sentiment(row) for row in sentences]
     # print("nltk_results", nltk_results)
     # print("nltk_results[1]", nltk_results[1])
+
+    id_df_new = pd.DataFrame()
+    j=0
+    for i in sent_list:
+        id_df = pd.DataFrame(id_list)
+
+        id_df = pd.DataFrame([id_df.iloc[j]]*(len(i)-1))
+        j += 1
+
+        # print("id_df",id_df)
+        id_df_new = pd.concat([id_df_new, id_df], ignore_index=True)
+
+    # print("id_df_new", id_df_new)
     results_df = pd.DataFrame(nltk_results)
     text_df = pd.DataFrame(sentences)
     nltk_df2=pd.DataFrame()
+    nltk_df2['id']=id_df_new
     nltk_df2['text'] = text_df
     nltk_df2=nltk_df2.join(results_df)
-    print('nltk_df.head(5)2', nltk_df2.head(5))
+    print('nltk_df.head(5)2', nltk_df2)
 
     nltk_df2.to_csv(
         r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv',
@@ -244,7 +271,7 @@ def nlp_article_semantic(file):
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv'
     # load(filename, 'results_for_plot')
-    # print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_for_plot.csv i wrzucony do tabeli results_for_plot")
+    print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_for_plot.csv i wrzucony do tabeli results_for_plot")
 
     ######################
 
@@ -289,24 +316,6 @@ def nlp_article_semantic(file):
                 coin_dic = {"Coin": coin_list, "Sentence": sent_all}
                 i+=1
 
-                # if coin == "bitcoin":
-                #     bitcoin_list.append(nltk_results[i])
-                #     sent2 = [coin]
-                #     sent_all.append([sent])
-                #     sent2.append([sent_all])
-                #     sent2.append(bitcoin_list)
-                #
-                # if coin == "polkadot":
-                #     polkadot_list.append(nltk_results[i])
-                #     sent3 = [coin]
-                #     sent3.append([sent])
-                #     sent3.append(polkadot_list)
-                #
-                # if coin == "chainlink":
-                #     chainlink_list.append(nltk_results[i])
-                #     sent4 = [coin]
-                #     sent4.append([sent])
-                #     sent4.append(chainlink_list)
 
     # print("sem_dic", sem_dic)
     # print("coin_dic", coin_dic)
@@ -474,7 +483,7 @@ def nlp_article_semantic(file):
     # sleep(1)
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/sentence_polarity_hisogram_plot.csv'
     # load(filename, 'sentence_polarity_distribution_plot')
-    # print("Przetłumaczony tekst przeanalizowany, zapisany jako sentence_polarity_hisogram_plot.csv i wrzucony do tabeli sentence_polarity_distribution_plot")
+    print("Przetłumaczony tekst przeanalizowany, zapisany jako sentence_polarity_hisogram_plot.csv i wrzucony do tabeli sentence_polarity_distribution_plot")
 
 
     #Obliczanie kwartali zeby dalo sie narysowac boxplot w DS
@@ -485,7 +494,7 @@ def nlp_article_semantic(file):
     i=0
     for v in absa_scores.values():
         scores = []
-
+        print("v", v)
         score = np.quantile(v, .25)
         scores.append(score)
 
@@ -500,13 +509,13 @@ def nlp_article_semantic(file):
 
         score = np.max(v)
         scores.append(score)
-        # print("scores", scores)
+        print("scores", scores)
         feature_polarity_quantiles_df.iloc[[i],[1]]=scores[0]
         feature_polarity_quantiles_df.iloc[[i],[2]]=scores[1]
         feature_polarity_quantiles_df.iloc[[i],[3]]=scores[2]
         feature_polarity_quantiles_df.iloc[[i],[4]]=scores[3]
         feature_polarity_quantiles_df.iloc[[i],[5]]=scores[4]
-
+        print('feature_polarity_quantiles_df', feature_polarity_quantiles_df)
         i+=1
 
 
@@ -525,7 +534,7 @@ def nlp_article_semantic(file):
         index=False, header=True)
     filename='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df.csv'
     # load(filename, 'sentence_polarity_hisogram_plot')
-    # print("Przetłumaczony tekst przeanalizowany, zapisany jako feature_polarity_calculations_df.csv i wrzucony do tabeli sentence_polarity_hisogram_plot")
+    print("Przetłumaczony tekst przeanalizowany, zapisany jako feature_polarity_calculations_df.csv i wrzucony do tabeli sentence_polarity_hisogram_plot")
 #########################
 
 

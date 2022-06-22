@@ -174,6 +174,7 @@ def article_translation(file):
             # print("drugra runda")
             # print('article_name_translated_df', article_name_translated_df1)
         j += 1
+    #######################
 
     article_link = pd.DataFrame(df['article_link'])
     article_name_translated_df1.reset_index(inplace=True)
