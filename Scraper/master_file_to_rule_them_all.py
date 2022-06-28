@@ -72,6 +72,6 @@ nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Sc
 # #######################
 
 
-#lacznie powstaje 5 tabel w BQ
+#lacznie powstaje 8 tabel w BQ
 
 
