@@ -185,7 +185,6 @@ def article_translation(file):
     text_translated_all = pd.concat([id_df, article_name_translated_df1, text_translated_df1, article_link], axis=1).drop(columns=['index'])
     print('text_translated_all', text_translated_all)
 
-    # text_translated_all["ommit"]=range(len(text_translated_all))
 
     text_translated_all.to_csv(r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv', index = False, header=True)
 
