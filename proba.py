@@ -234,11 +234,12 @@ nltk_results = [nltk_sentiment(row) for row in sentences]
 # print("nltk_results", nltk_results)
 # print("nltk_results[1]", nltk_results[1])
 results_df = pd.DataFrame(nltk_results)
+print("sentences", sentences)
 text_df = pd.DataFrame(sentences)
 nltk_df2=pd.DataFrame()
 nltk_df2['text'] = text_df
 nltk_df2=nltk_df2.join(results_df)
-print('nltk_df.head(5)2', nltk_df2.head(5))
+print('nltk_df2', nltk_df2)
 
 # nltk_df2.to_csv(
 #     r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv',
@@ -254,8 +255,8 @@ scores = list()
 absa_scores = dict()
 for k, v in absa_list.items():
     # print("k", k)
-    absa_scores[k] = list()
     # print("v", v)
+    absa_scores[k] = list()
     for sent in v:
         score = sent.sentiment.polarity #to jest dla zdania
         scores.append(score)
