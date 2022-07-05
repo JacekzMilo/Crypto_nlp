@@ -1,4 +1,4 @@
-coin,min,delta_lower_quartile,median,delta_upper_quartile,delta_max
-polkadot,0.0,0.0,0.0,0.0,0.0
-bitcoin,-0.27499999999999997,0.27499999999999997,0.008779761904761905,0.16488095238095238,0.4351190476190476
-chainlink,0.0,0.0,0.0,0.0,0.0
+coin,min,delta_lower_quartile,median,delta_upper_quartile,delta_max,max
+polkadot,0.0,0.0,0.0,0.0,0.0,0.0
+bitcoin,-0.27499999999999997,-0.27499999999999997,0.008779761904761905,0.16488095238095238,0.4351190476190476,0.6
+chainlink,0.0,0.0,0.0,0.0,0.0,0.0
