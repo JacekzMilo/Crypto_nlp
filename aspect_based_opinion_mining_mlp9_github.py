@@ -23,6 +23,8 @@ def nlp_article_semantic(file):
     df = pd.read_csv(f"{file}", encoding="utf8")
 
     result = df["article_text"]
+
+
     ###################### Below is a func that cleans passed text
     def clean_sentence(sentence):
         sentence = re.sub(r"(?:\@|https?\://)\S+|\n+", "", sentence.lower())
