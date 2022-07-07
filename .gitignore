@@ -1,6 +1,5 @@
 /NLP_algorithm_auth_key/
 /Rss_scraper_auth_key/
-/Nowy folder/
 /Próbne algorytmy/
 /Old/
 /word2vec/
@@ -10,7 +9,7 @@
 /Load_to_GCP
 /nlp_plot
 /.idea
-/_pycache_
+/__pycache__
 /_init_.py
 /nltk_main.py
 /nltk_test.py
