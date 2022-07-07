@@ -8,8 +8,8 @@
 /nlpdb.db
 /Load_to_GCP
 /nlp_plot
-/.idea
-/__pycache__
+.idea
+__pycache__
 /_init_.py
 /nltk_main.py
 /nltk_test.py
