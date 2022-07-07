@@ -14,7 +14,8 @@ import pandas as pd
 from time import sleep
 from twisted.internet import reactor, defer
 
-# ######################To odpala scrapera
+
+# ###################### Below code runs scrapping module
 # # output = []
 # # def get_output(item):
 # #     output.append(item)
@@ -28,16 +29,15 @@ from twisted.internet import reactor, defer
 #             coin_desk_spider.CoinDeskSpider, bitcoin_magazine_spider.BitcoinMagazineSpider
 #             ]
 #
-# ####### OGARNIJ TE: the_block_spider.TheBlockSpider i the_defiant_spider.TheDefiantSpider i blockworks_spider.BlockWorksSpider
+# # TODO: the_block_spider.TheBlockSpider i the_defiant_spider.TheDefiantSpider i blockworks_spider.BlockWorksSpider
 #
-# #coindeskspider ma zahardkodowany zakres div, nie koniecznie musi sie zgadzac w nowych artykulach, do sprawdzenia
+# # TODO: coindeskspider has hardcoded div range and may not cover all article
 #
 # def start_sequentially(process: CrawlerProcess, crawlers: list):
 #     print('start crawler {}'.format(crawlers[0].__name__))
 #     deferred = process.crawl(crawlers[0])
 #     if len(crawlers) > 1:
-#         deferred.addCallback(lambda _: start_sequentially(process, crawlers[1:]))
-#
+#         deferred.addCallback(lambda _: start_sequentially(process, crawlers[1:]))#
 #
 # process = CrawlerProcess(settings=get_project_settings())
 # start_sequentially(process, crawlers)
@@ -46,32 +46,31 @@ from twisted.internet import reactor, defer
 # # process.crawl(zrozumiecbitc.ZrozumiecbitcSpider)
 # process.start()
 # # print(output)
+# ######################
+
+
+# ###################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
+# # Below code runs customtextfunc that puts scrapped text into article table in BQ
+#
+file ='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json'
+customtextfunc(file)
 # #######################
 
-####################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
-# #wrzuca do tabeli article oryginalny text ze strony do tabeli article
-#
-# file ='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json'
-# customtextfunc(file)
 
-# #######################
-# #######################Tlumaczy na angielski, tworzy plik article_translated.csv i wrzuca w oddzielna tabele w BQ: article_translated
-#
+# ####################### Below code runs article_translation function that translate article text into English and puts
+# # the data into article_translated table in BQ
+
 # filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
 # article_translation(filename)
-#
-# #######################
-
-# #######################to tworzy sentence_polarity_hisogram_plot.csv i wrzuca w tabele sentence_polarity_distribution_plot, DS na podstawie tej
-# # tabeli tworzy wykres dystrybucji polarity (slupkowy+liniowy)
-# # Następnie tworzy plik article_semantics_results_for_plot.csv który wrzuca w tabele results_for_plot z której powstaje wykres słupkowy pos/neg
-# #Następnie tworzy plik feature_polarity_calculations_df.csv i wrzuca do tabeli sentence_polarity_hisogram_plot i z tego tworzy wykres boxplot.
-#
-#
-nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
 # #######################
 
 
-#lacznie powstaje 8 tabel w BQ
+# #######################the code below creates the sentence_polarity_hisogram_plot.csv and puts the sentence_polarity_distribution_plot into the tables on the BQ
+# # Then creates the file article_semantics_results_for_plot.csv which he puts in the results_for_plot table
+# # Then creates feature_polarity_calculations_df.csv and adds sentence_polarity_hisogram_plot to the table
+#
+# nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
+# #######################
+
 
 

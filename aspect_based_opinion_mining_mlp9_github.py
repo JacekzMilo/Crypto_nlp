@@ -23,6 +23,8 @@ def nlp_article_semantic(file):
     df = pd.read_csv(f"{file}", encoding="utf8")
 
     result = df["article_text"]
+
+
     ###################### Below is a func that cleans passed text
     def clean_sentence(sentence):
         sentence = re.sub(r"(?:\@|https?\://)\S+|\n+", "", sentence.lower())
@@ -193,6 +195,7 @@ def nlp_article_semantic(file):
     nltk_df2['id'] = id_df_new
     nltk_df2['text'] = text_df
     nltk_df2 = nltk_df2.join(results_df)
+    nltk_df2['neg'] = nltk_df2['neg']*(-1)
     print('nltk_df2', nltk_df2)
 
     nltk_df2.to_csv(
@@ -337,13 +340,26 @@ def nlp_article_semantic(file):
     vals = dict()
     vals["aspects"] = list()
     vals["scores"] = list()
+    vals["id"] = list()
+
     for k, v in absa_scores.items():
         for score in v:
             if type(score) is float:
                 vals["aspects"].append(k)
                 vals["scores"].append(score)
+            if type(score) is list:
+                for i in score:
+                    vals["id"].append("".join(str(i)))
+
+    # vals["id"] = ", ".join(str(x) for x in vals["id"])
     print("vals", vals)
     print("vals[scores]", vals["scores"])
+    vals_df = pd.DataFrame.from_dict(vals)
+    vals_df.to_csv(
+            r'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/box_plot.csv',
+            index=False, header=True)
+    filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/box_plot.csv'
+    load(filename, 'box_plot')
     ##########################
 
 
@@ -452,9 +468,11 @@ def nlp_article_semantic(file):
     feature_polarity_calculations_df["coin"]=feature_polarity_quantiles_df["coin"]
     feature_polarity_calculations_df["min"]=feature_polarity_quantiles_df["min"]
     feature_polarity_calculations_df["median"]=feature_polarity_quantiles_df["median"]
-    feature_polarity_calculations_df["delta_lower_quartile"]=feature_polarity_quantiles_df["lower_quartile"]-feature_polarity_quantiles_df["min"]
-    feature_polarity_calculations_df["delta_upper_quartile"]=feature_polarity_quantiles_df["upper_quartile"]-feature_polarity_quantiles_df["lower_quartile"]
-    feature_polarity_calculations_df["delta_max"]=feature_polarity_quantiles_df["max"]-feature_polarity_quantiles_df["upper_quartile"]
+    feature_polarity_calculations_df["delta_lower_quartile"]=feature_polarity_quantiles_df["lower_quartile"]-abs(feature_polarity_quantiles_df["min"])
+    feature_polarity_calculations_df["delta_upper_quartile"]=feature_polarity_quantiles_df["upper_quartile"]-abs(feature_polarity_quantiles_df["lower_quartile"])
+    feature_polarity_calculations_df["delta_max"]=feature_polarity_quantiles_df["max"]-abs(feature_polarity_quantiles_df["upper_quartile"])
+    feature_polarity_calculations_df["max"]=feature_polarity_quantiles_df["max"]
+
 
     print("feature_polarity_calculations_df", feature_polarity_calculations_df)
     feature_polarity_calculations_df.to_csv(
@@ -499,12 +517,18 @@ def nlp_article_semantic(file):
 
         feature_polarity_calculations_df["min"] = feature_polarity_quantiles_df["min"]
         feature_polarity_calculations_df["median"] = feature_polarity_quantiles_df["median"]
+        feature_polarity_calculations_df["lower_quartile"] = feature_polarity_quantiles_df["lower_quartile"]
+
         feature_polarity_calculations_df["delta_lower_quartile"] = feature_polarity_quantiles_df["lower_quartile"] - \
-                                                                   feature_polarity_quantiles_df["min"]
+                                                                   abs(feature_polarity_quantiles_df["min"])
+        feature_polarity_calculations_df["upper_quartile"] = feature_polarity_quantiles_df["upper_quartile"]
+
         feature_polarity_calculations_df["delta_upper_quartile"] = feature_polarity_quantiles_df["upper_quartile"] - \
-                                                                   feature_polarity_quantiles_df["lower_quartile"]
+                                                                   abs(feature_polarity_quantiles_df["lower_quartile"])
         feature_polarity_calculations_df["delta_max"] = feature_polarity_quantiles_df["max"] - \
-                                                        feature_polarity_quantiles_df["upper_quartile"]
+                                                        abs(feature_polarity_quantiles_df["upper_quartile"])
+        feature_polarity_calculations_df["max"] = feature_polarity_quantiles_df["max"]
+
         print("feature_polarity_calculations_df", feature_polarity_calculations_df)
         feature_polarity_calculations_df.to_csv(
             rf'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df_{j}.csv',
