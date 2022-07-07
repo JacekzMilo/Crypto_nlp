@@ -15,3 +15,5 @@ __pycache__
 /nltk_test.py
 /schematBQ.txt
 /utils.py
+Scraper/Scraper/spiders/*.csv
+Scraper/Scraper/spiders/*.json
