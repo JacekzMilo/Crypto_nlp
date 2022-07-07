@@ -28,7 +28,6 @@ def nlp_article_semantic(file):
     ###################### Below is a func that cleans passed text
     def clean_sentence(sentence):
         sentence = re.sub(r"(?:\@|https?\://)\S+|\n+", "", sentence.lower())
-        # Fix spelling errors in comments!
         sent = TextBlob(sentence)
         sent.correct()
         clean = ""
