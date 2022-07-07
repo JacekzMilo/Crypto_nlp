@@ -1,27 +1,13 @@
 from Crypto_nlp.Scraper.Scraper.custom_text_edit import customtextfunc, article_translation
-from Crypto_nlp.Load_to_GCP import load
-from Crypto_nlp.aspect_based_opinion_mining_mlp9_github import nlp_article_semantic
-from scrapy.signalmanager import dispatcher
-from scrapy import signals
+from Crypto_nlp.aspect_based_semantic_analysis import nlp_article_semantic
 from scrapy.crawler import CrawlerProcess
-# from Crypto_nlp.Scraper.Scraper import settings
-# from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
 from Crypto_nlp.Scraper.Scraper.spiders import zrozumiecbitc, bitcoin_spider, insights_glassnode_spider, coin_desk_spider, \
     bitcoin_magazine_spider, the_block_spider, the_defiant_spider, blockworks_spider
 import os
-import pandas as pd
-from time import sleep
-from twisted.internet import reactor, defer
 
 
 # ###################### Below code runs scrapping module
-# # output = []
-# # def get_output(item):
-# #     output.append(item)
-# #     return output
-# # dispatcher.connect(get_output, signal=signals.item_scraped)
-#
 # settings_file_path = 'Scraper.settings' # The path seen from root, ie. from main.py
 # os.environ.setdefault('SCRAPY_SETTINGS_MODULE', settings_file_path)
 # crawlers = [zrozumiecbitc.ZrozumiecbitcSpider, bitcoin_spider.BitcoinSpider,
@@ -49,28 +35,28 @@ from twisted.internet import reactor, defer
 # ######################
 
 
-# ###################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
-# # Below code runs customtextfunc that puts scrapped text into article table in BQ
-#
+###################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
+# Below code runs customtextfunc that puts scrapped text into article table in BQ
+
 file ='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json'
 customtextfunc(file)
-# #######################
+#######################
 
 
-# ####################### Below code runs article_translation function that translate article text into English and puts
-# # the data into article_translated table in BQ
+####################### Below code runs article_translation function that translate article text into English and puts
+# the data into article_translated table in BQ
 
-# filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
-# article_translation(filename)
-# #######################
+filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
+article_translation(filename)
+#######################
 
 
-# #######################the code below creates the sentence_polarity_hisogram_plot.csv and puts the sentence_polarity_distribution_plot into the tables on the BQ
-# # Then creates the file article_semantics_results_for_plot.csv which he puts in the results_for_plot table
-# # Then creates feature_polarity_calculations_df.csv and adds sentence_polarity_hisogram_plot to the table
-#
-# nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
-# #######################
+#######################the code below creates the sentence_polarity_hisogram_plot.csv and puts the sentence_polarity_distribution_plot into the tables on the BQ
+# Then creates the file article_semantics_results_for_plot.csv which he puts in the results_for_plot table
+# Then creates feature_polarity_calculations_df.csv and adds sentence_polarity_hisogram_plot to the table
+
+nlp_article_semantic("C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv")
+#######################
 
 
 

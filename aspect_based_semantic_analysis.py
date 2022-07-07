@@ -286,54 +286,54 @@ def nlp_article_semantic(file):
     ######################
 
 
-    ################################ Bar plot
-    #plot1
-    n_groups = len(frequent_features)
-    positive = nltk_df2['pos'].head(len(frequent_features))
-    negative = nltk_df2['neg'].head(len(frequent_features))
-
-    # create plot
-    fig, ax = plt.subplots()
-    index = np.arange(n_groups)
-    bar_width = 0.3
-    opacity = 1
-
-    rects1 = plt.bar(index, positive, bar_width,
-                     alpha=opacity,
-                     color='b',
-                     label='positive sentiments')
-
-    rects2 = plt.bar(index + bar_width, negative, bar_width,
-                     alpha=opacity,
-                     color='r',
-                     label='negative sentiments')
-
-    plt.xlabel('Features')
-    plt.ylabel('sentiment value')
-    plt.title('Top features and its sentiment')
-    plt.xticks(index + bar_width, nltk_df2['text'])
-    plt.legend()
-    fig.set_size_inches(15, 10)
-    plt.show()
-    ##########################
-
-
-    ######################### Polarity distribution plot -> two bar plots
-    #Plot 2
-    fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=True, figsize=(15, 10))
-    plot1 = sns.distplot(scores, ax=ax1)
-
-    ax1.set_title('Aspect wise scores')
-    ax1.set_xlabel('Sentiment Polarity')
-    ax1.set_ylabel('# of comments')
-
-    ax2.set_title('Article wise scores')
-    ax2.set_xlabel('Sentiment Polarity')
-    ax2.set_ylabel('# of comments')
-
-    plot2 = sns.distplot(sentiment_scores, ax=ax2)
-    plt.show()
-    ##########################
+    # ################################ Bar plot
+    # #plot1
+    # n_groups = len(frequent_features)
+    # positive = nltk_df2['pos'].head(len(frequent_features))
+    # negative = nltk_df2['neg'].head(len(frequent_features))
+    #
+    # # create plot
+    # fig, ax = plt.subplots()
+    # index = np.arange(n_groups)
+    # bar_width = 0.3
+    # opacity = 1
+    #
+    # rects1 = plt.bar(index, positive, bar_width,
+    #                  alpha=opacity,
+    #                  color='b',
+    #                  label='positive sentiments')
+    #
+    # rects2 = plt.bar(index + bar_width, negative, bar_width,
+    #                  alpha=opacity,
+    #                  color='r',
+    #                  label='negative sentiments')
+    #
+    # plt.xlabel('Features')
+    # plt.ylabel('sentiment value')
+    # plt.title('Top features and its sentiment')
+    # plt.xticks(index + bar_width, nltk_df2['text'])
+    # plt.legend()
+    # fig.set_size_inches(15, 10)
+    # plt.show()
+    # ##########################
+    #
+    #
+    # ######################### Polarity distribution plot -> two bar plots
+    # #Plot 2
+    # fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=True, figsize=(15, 10))
+    # plot1 = sns.distplot(scores, ax=ax1)
+    #
+    # ax1.set_title('Aspect wise scores')
+    # ax1.set_xlabel('Sentiment Polarity')
+    # ax1.set_ylabel('# of comments')
+    #
+    # ax2.set_title('Article wise scores')
+    # ax2.set_xlabel('Sentiment Polarity')
+    # ax2.set_ylabel('# of comments')
+    #
+    # plot2 = sns.distplot(sentiment_scores, ax=ax2)
+    # plt.show()
+    # ##########################
 
 
     ########################## Create data values for stripplot and boxplot
@@ -363,23 +363,23 @@ def nlp_article_semantic(file):
     ##########################
 
 
-    # ######################### Polarity distribution plot -> box plot
-    # #Plot 3
-
-    fig, ax1 = plt.subplots(figsize=(15, 10))
-    color = sns.color_palette("Blues")
-    plt.xticks(rotation=90)
-    sns.set_context("paper", font_scale=3)
-    sns.boxplot(x="aspects", y="scores", data=vals, palette=color, ax=ax1)
-
-    #ten chyba najmniej istotny, inne pokazanie wykresu 1
-    color = sns.color_palette("Blues", 1)
-    fig, ax1 = plt.subplots(figsize=(15, 10))
-    plt.xticks(rotation=90)
-    sns.set_context("paper", font_scale=5)
-    sns.stripplot(y="aspects", x="scores", data=vals, palette=color)
-    plt.show()
-    ##########################
+    # # ######################### Polarity distribution plot -> box plot
+    # # #Plot 3
+    #
+    # fig, ax1 = plt.subplots(figsize=(15, 10))
+    # color = sns.color_palette("Blues")
+    # plt.xticks(rotation=90)
+    # sns.set_context("paper", font_scale=3)
+    # sns.boxplot(x="aspects", y="scores", data=vals, palette=color, ax=ax1)
+    #
+    # #ten chyba najmniej istotny, inne pokazanie wykresu 1
+    # color = sns.color_palette("Blues", 1)
+    # fig, ax1 = plt.subplots(figsize=(15, 10))
+    # plt.xticks(rotation=90)
+    # sns.set_context("paper", font_scale=5)
+    # sns.stripplot(y="aspects", x="scores", data=vals, palette=color)
+    # plt.show()
+    # ##########################
 
 
     ######################## Sentences grupped by article ID, might be usefull
