@@ -122,7 +122,7 @@ def customtextfunc(file):
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
     load(filename, 'article')
-    print("Oryginalny tekst wyczyszczony, zapisany jako Scraped_data.csv i wrzucoy do tabeli article" )
+    print("The original text is cleared, saved as Scraped_data.csv and thrown into the article table" )
 ##########################
 
 
@@ -180,5 +180,5 @@ def article_translation(file):
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_translated.csv'
     load(filename, 'article_translated')
-    print("Oryginalny tekst przetłumaczony i zapisany jako article_translated.csv")
+    print("Original text translated and saved as article_translated.csv")
     ##########################

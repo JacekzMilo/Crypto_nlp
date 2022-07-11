@@ -201,7 +201,7 @@ def nlp_article_semantic(file):
 
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_for_plot.csv'
     load(filename, 'results_for_plot')
-    print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_for_plot.csv i wrzucony do tabeli results_for_plot")
+    print("Translated parsed text, saved as article_semantics_results_for_plot.csv and thrown into the results_for_plot table")
     ######################
 
 
@@ -283,7 +283,7 @@ def nlp_article_semantic(file):
         index=False, header=True)
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/article_semantics_results_aggregaded.csv'
     load(filename, 'results_aggregaded')
-    print("Przetłumaczony tekst przeanalizowany, zapisany jako article_semantics_results_aggregaded.csv i wrzucony do tabeli results_aggregaded")
+    print("Translated parsed text, saved as article_semantics_results_aggregaded.csv and thrown into the results_aggregaded table")
     ######################
 
 
@@ -429,11 +429,12 @@ def nlp_article_semantic(file):
         index=False, header=True)
     filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/sentence_polarity_hisogram_plot.csv'
     load(filename, 'sentence_polarity_distribution_plot')
-    print("Przetłumaczony tekst przeanalizowany, zapisany jako sentence_polarity_hisogram_plot.csv i wrzucony do tabeli sentence_polarity_distribution_plot")
+    print("Translated parsed text, saved as sentence_polarity_hisogram_plot.csv and thrown into the sentence_polarity_distribution_plot table")
     ########################
 
 
-    ######################## Here the sentence_polarity_histogram_plot is created and it contains calculations needed for creating box plot in Data Studio -> REGARDLES THE ARTICLE
+    ######################## Here the sentence_polarity_histogram_plot is created and it contains calculations needed for
+    # creating box plot in Data Studio -> REGARDLESS THE ARTICLE
     # Can be used to summarise conclusions from all articles
 
     feature_polarity_quantiles_df=pd.DataFrame(columns=["coin", "lower_quartile", "median", "upper_quartile", "min", "max"])
@@ -482,11 +483,12 @@ def nlp_article_semantic(file):
         index=False, header=True)
     filename='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df.csv'
     load(filename, 'sentence_polarity_hisogram_plot_all_articles')
-    print("Przetłumaczony tekst przeanalizowany, zapisany jako feature_polarity_calculations_df.csv i wrzucony do tabeli sentence_polarity_hisogram_plot_all_articles")
+    print("Translated parsed text, saved as feature_polarity_calculations_df.csv and placed in the sentence_polarity_hisogram_plot_all_articles table")
     #########################
 
 
-    ######################## Here the sentence_polarity_histogram_plot_by_article is created and it contains calculations needed for creating box plot in Data Studio -> calculated per article ID
+    ######################## Here the sentence_polarity_histogram_plot_by_article is created and it contains calculations
+    # needed for creating box plot in Data Studio -> calculated per article ID
     def histogram_data_plot(id, j):
         feature_polarity_quantiles_df.at[j, 'id'] = id
 
@@ -562,7 +564,7 @@ def nlp_article_semantic(file):
 
     filename = f'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df_{j}.csv'
     load(filename, 'sentence_polarity_hisogram_plot_by_article')
-    print("Przetłumaczony tekst przeanalizowany, zapisany jako feature_polarity_calculations_df.csv i wrzucony do tabeli sentence_polarity_hisogram_plot_by_article")
+    print("Translated parsed text, saved as feature_polarity_calculations_df.csv and placed in the sentence_polarity_hisogram_plot_by_article table")
 ########################
 
 
