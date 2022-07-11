@@ -31,24 +31,23 @@ import os
 # # process = CrawlerProcess(settings)
 # # process.crawl(zrozumiecbitc.ZrozumiecbitcSpider)
 # process.start()
-# # print(output)
 # ######################
-
-
-###################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
-# Below code runs customtextfunc that puts scrapped text into article table in BQ
-
-file ='C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json'
-customtextfunc(file)
-#######################
-
-
-####################### Below code runs article_translation function that translate article text into English and puts
-# the data into article_translated table in BQ
-
-filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
-article_translation(filename)
-#######################
+#
+#
+# ###################### Tu by sie przydało usprawnić. Gdy raz przejdzie przez customtextfunc i ponownie chce przejsc to wyskakuje blad.
+# # Below code runs customtextfunc that puts scrapped text into article table in BQ
+#
+# file = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.json'
+# customtextfunc(file)
+# #######################
+#
+#
+# ####################### Below code runs article_translation function that translate article text into English and puts
+# # the data into article_translated table in BQ
+#
+# filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/Scraped_data.csv'
+# article_translation(filename)
+# #######################
 
 
 #######################the code below creates the sentence_polarity_hisogram_plot.csv and puts the sentence_polarity_distribution_plot into the tables on the BQ

@@ -28,6 +28,7 @@ Through that project I wanted to learn as much as can in mentioned areas.
 4. TODO: Add more blogs
 5. TODO: Upgrade code
 6. TODO: Add analysis between sentences 
+7. TODO: Add history of past articles
  
 ## File Description <a name="descriptions"></a>
 In root folder there is a main.py file that runs all sub functions in proper order, to run this program, run main.py. 
