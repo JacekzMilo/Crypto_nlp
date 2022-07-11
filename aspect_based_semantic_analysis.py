@@ -117,8 +117,9 @@ def nlp_article_semantic(file):
         comment_ser.append([df['id'][i]])
         comment_id.append(comment_ser)
         i += 1
-    ######################
+    print("comment_id", comment_id)
 
+    ######################
 
     ###################### Below code searches sentences with key words. Creates a dictionary where keys are the coin names and values are sentences
     # and a list of sentences with key words and article ID that they came from
@@ -141,10 +142,7 @@ def nlp_article_semantic(file):
                 for sentence in blob.sentences:
                     # Search for frequent feature 'f'
                     if re.search(r'\w*(' + str(q) + ')\w*', str(sentence)):
-                        # print("f", f)
-                        # print("sentence", sentence)
                         absa_list[f].append(sentence)
-                        # print("absa_list[f]", absa_list)
                         art_sent.append([sentence])
 
             if art_sent:
@@ -214,15 +212,17 @@ def nlp_article_semantic(file):
         absa_scores[k] = list()
         id_all = list()
         for sent in v:
-            score = sent.sentiment.polarity # This is fo a sentence
-            scores.append(score)
-            absa_scores[k].append(score)
-
+            # score = sent.sentiment.polarity # This is fo a sentence
+            # scores.append(score)
+            # absa_scores[k].append(score)
             for sent_nltk in nltk_df2['text']:
                 row_id = nltk_df2[nltk_df2['text'] == sent_nltk].index[0]
                 if re.search(r'\w*(' + str(sent) + ')\w*', str(sent_nltk)):
                     id = nltk_df2['id'][row_id]
                     id_all.append(id)
+                    score = sent.sentiment.polarity  # This is fo a sentence
+                    scores.append(score)
+                    absa_scores[k].append(score)
 
         absa_scores[k].append(id_all)
 
@@ -239,19 +239,21 @@ def nlp_article_semantic(file):
     final_list=[]
     coin_dic = {}
     sem_dic = {}
-
     i=0
     for sent in sentences:
         for coin in frequent_features:
             if coin in sent:
-                sentence_sentiment_list.append(nltk_results[i])
+                if sent == sentences[i-1]:
+                    sentence_sentiment_list.append(nltk_results[i])
+                else:
+                    sentence_sentiment_list.append(nltk_results[i])
+                    i+=1
                 coin_list.append(coin)
                 sem_dic = {"Sentence sentiment analysis": sentence_sentiment_list, "Coin": coin_list}
 
                 final_list.append(coin)
                 sent_all.append(sent)
                 coin_dic = {"Coin": coin_list, "Sentence": sent_all}
-                i+=1
 
     print("sem_dic", sem_dic) # Dictionary with sentiment analysis column and coin names column
     print("coin_dic", coin_dic) # Dictionary with sentences in one column and coin names in second column
@@ -315,8 +317,8 @@ def nlp_article_semantic(file):
     # fig.set_size_inches(15, 10)
     # plt.show()
     # ##########################
-    #
-    #
+
+
     # ######################### Polarity distribution plot -> two bar plots
     # #Plot 2
     # fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=True, figsize=(15, 10))
@@ -348,6 +350,7 @@ def nlp_article_semantic(file):
                 vals["scores"].append(score)
             if type(score) is list:
                 for i in score:
+                    # print("i", i)
                     vals["id"].append("".join(str(i)))
 
     # vals["id"] = ", ".join(str(x) for x in vals["id"])
@@ -557,7 +560,7 @@ def nlp_article_semantic(file):
             except:
                 histogram_data_plot(id, j)
 
-    filename = 'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df_4.csv'
+    filename = f'C:/Users/Jacklord/PycharmProjects/Crypto_nlp/Crypto_nlp/Scraper/Scraper/spiders/feature_polarity_calculations_df_{j}.csv'
     load(filename, 'sentence_polarity_hisogram_plot_by_article')
     print("Przetłumaczony tekst przeanalizowany, zapisany jako feature_polarity_calculations_df.csv i wrzucony do tabeli sentence_polarity_hisogram_plot_by_article")
 ########################
