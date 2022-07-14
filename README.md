@@ -76,3 +76,4 @@ Second page showcase three plots that refer to semantic distribution. Top left g
 of sentence sentiment polarity. It consists of values: min, lower quartile, upper quartile and max. Top right plot is a
 histogram that show the quantity of different coins grouped into different ranges. Bottom graph show semantic polarity
 distribution grouped per coin, each bar refers to different sentence containing coin name.
+Final report can be found under this link: https://datastudio.google.com/reporting/38998403-3617-4f5a-a8f0-7ac816c08a0d
